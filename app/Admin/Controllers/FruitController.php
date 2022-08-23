@@ -3,11 +3,14 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Fruit;
+use App\Models\StockRecord;
+use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Exception;
+use Illuminate\Http\Request;
 
 class FruitController extends AdminController
 {
@@ -40,7 +43,7 @@ class FruitController extends AdminController
         $grid->column('stock', __('Stock'))->editable();
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
-            'off' => ['value' => 2, 'text' => 'Off', 'color' => 'default'],
+            'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],
         ];
         $grid->column('status', __('Status'))->switch($states);
         $grid->column('created_at', __('Created at'));
@@ -115,5 +118,28 @@ class FruitController extends AdminController
             }
         });
         return $form;
+    }
+
+    public function takefruit(Request $request){
+        $agent = Administrator::find($request->agent);
+        foreach ($request->data as $data){
+            if($data['number'] > 0){
+                $fruit = Fruit::find($data['id']);
+                $stok_before = $fruit->stock;
+                $fruit->stock -= $data['number'];
+                $fruit->save();
+                $stok_after = $fruit->stock;
+                StockRecord::create([
+                    'fruit_id' => $data['id'],
+                    'from_id' => $request->agent,
+                    'from_id' => $request->agent,
+                    'stock_before' =>  $stok_before,
+                    'quantity' =>  $data['number'],
+                    'stock_after' =>  $stok_after,
+                    'remarks' => $agent->username .' take stock',
+                ]);
+            }
+        }
+        return response()->json('Ok');
     }
 }

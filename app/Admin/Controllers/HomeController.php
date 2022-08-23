@@ -54,12 +54,7 @@ class HomeController extends Controller
                   element.blur();
                 }
               });
-            });
-
-            function submitStock(){
-                console.log("hi");
-            }
-            ');
+            });');
             Admin::style(':root {
                 --width-container: 540px;
               }
@@ -138,12 +133,12 @@ class HomeController extends Controller
               
               ');
             return $content
-            ->title('Dashboard')
-            ->row(function (Row $row) {
-                $fruits = Fruit::where('status', 1)->get();
-                foreach ($fruits as $data) {
-                    $row->column(2, function (Column $column) use ($data){
-                        $column->append('<div class="container">
+                ->title('Dashboard')
+                ->row(function (Row $row) {
+                    $fruits = Fruit::where('status', 1)->get();
+                    foreach ($fruits as $data) {
+                        $row->column(2, function (Column $column) use ($data) {
+                            $column->append('<div class="container">
                         <div class="input-row">
                           <div class="title">
                             <img src="' . $data->image . '" width="100%" height="150">
@@ -156,7 +151,7 @@ class HomeController extends Controller
                                 <line y1="1" x2="16" y2="1" stroke="#0064FE" stroke-width="2" class="icon" />
                               </svg>
                             </button>
-                            <div class="number dim" id="'.$data->id.'">0</div>
+                            <div class="number dim" id="' . $data->id . '">0</div>
                             <button class="button-custom plus" aria-label="Increase by one">
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                                 <line x1="8" y1="4.37114e-08" x2="8" y2="16" stroke="#0064FE" stroke-width="2" />
@@ -167,12 +162,58 @@ class HomeController extends Controller
                           </div>
                         </div>
                       </div>');
+                        });
+                    }
+                    $row->column(12, function (Column $column) {
+                        $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="submitStock()">提交</button></div>');
                     });
-                }
-                $row->column(12, function (Column $column){
-                    $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="submitStock()">提交</button></div>');
+                    Admin::html('<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>function submitStock(){
+                    const numbers = document.querySelectorAll(".number");
+                    var fruitarray = [];
+                    numbers.forEach((div) => {
+                        fruitarray.push({
+                            id: div.id,
+                            number: div.textContent
+                        });
+                    });
+                    Swal.fire({
+                      title: "確定執行？",
+                      text: "請確認資料無誤",
+                      type: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "確定",
+                      cancelButtonText: "取消"
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        console.log("???");
+                        $.ajaxSetup({
+                          headers: {
+                              "X-CSRF-TOKEN": $("meta[name='."csrf-token".']").attr("content")
+                          }
+                      });
+                      $.ajax({
+                          type: "POST",
+                          url: "/admin/takefruit",
+                          data: {data: fruitarray,agent:'.FacadesAdmin::user()->id.'},
+                          dataType: "json",
+                          success: function (data) {
+                            Swal.fire(
+                              "成功!",
+                              "此動作已被記錄.",
+                              "success"
+                            )
+                          },
+                          error: function (data) {
+                              console.log(data);
+                          }
+                      });
+                      }
+                    })
+                }</script>');
                 });
-            });
         }
     }
 }

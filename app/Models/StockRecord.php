@@ -11,6 +11,7 @@ class StockRecord extends Model
     use HasFactory,DefaultDatetimeFormat;
 
     protected $fillable = [
+        'from_id',
         'fruit_id',
         'stock_before',
         'quantity',

@@ -14,9 +14,8 @@ class ApiController extends Controller
 {
     public function register(Request $request)
     {
-    	
     }
- 
+
     public function authenticate(Request $request)
     {
         $credentials = $request->only('username', 'password');
@@ -29,46 +28,50 @@ class ApiController extends Controller
 
         //Send failed response if request is not valid
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 200);
+            return response()->json(['success' => false, 'message' => $validator->messages()], 200);
         }
 
         //Request is validated
         //Crean token
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json([
-                	'success' => false,
-                	'message' => 'Login credentials are invalid.',
-                ], 400);
+                    'success' => false,
+                    'message' => 'Login credentials are invalid.',
+                ], 200);
             }
         } catch (JWTException $e) {
-    	return $credentials;
             return response()->json([
-                	'success' => false,
-                	'message' => 'Could not create token.',
-                ], 500);
+                'success' => false,
+                'message' => 'Could not create token.',
+            ], 200);
         }
 
         try {
             $user = Auth::user();
-            if ($user->status === 0 ) {
+            // return $user;
+            if ($user->status == 0) {
                 $this->invalidToken();
-                return response()->json(['error' => 'Your account has been suspended, kindly contact admin for more information.'], 401);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account has been suspended, kindly contact admin for more information.',
+                ], 200);
             }
         } catch (JWTException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Your account has been suspended, kindly contact admin for more information.',
-            ], 500);
+            ], 200);
         }
- 	
- 		//Token created, return with success response and jwt token
+
+        //Token created, return with success response and jwt token
         return response()->json([
             'success' => true,
             'token' => $token,
+            'username' => $user->username,
         ]);
     }
- 
+
     public function logout(Request $request)
     {
         //valid credential
@@ -81,10 +84,10 @@ class ApiController extends Controller
             return response()->json(['error' => $validator->messages()], 200);
         }
 
-		//Request is validated, do logout        
+        //Request is validated, do logout        
         try {
             JWTAuth::invalidate($request->token);
- 
+
             return response()->json([
                 'success' => true,
                 'message' => 'User has been logged out'
@@ -96,15 +99,21 @@ class ApiController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
- 
+
     public function get_user(Request $request)
     {
         $this->validate($request, [
             'token' => 'required'
         ]);
- 
+
         $user = JWTAuth::authenticate($request->token);
- 
+
         return response()->json(['user' => $user]);
+    }
+
+    public static function invalidToken()
+    {
+        $current_token = JWTAuth::getToken();
+        JWTAuth::setToken($current_token)->invalidate();
     }
 }

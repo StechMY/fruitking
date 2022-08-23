@@ -15,6 +15,7 @@ class CreateStockRecordsTable extends Migration
     {
         Schema::create('stock_records', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('from_id');
             $table->unsignedBigInteger('fruit_id');
             $table->foreign('fruit_id')->references('id')->on('fruits');
             $table->integer('stock_before');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Admin\Controllers\FruitController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::post('/admin/takefruit', [FruitController::class, 'takefruit']);
+
 
 Route::get('/', function () {
     return view('welcome');

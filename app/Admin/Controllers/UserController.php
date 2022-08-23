@@ -49,7 +49,7 @@ class UserController extends AdminController
         // $grid->column('remember_token', __('Remember token'));
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
-            'off' => ['value' => 2, 'text' => 'Off', 'color' => 'default'],
+            'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],
         ];
         $grid->column('status', __('Status'))->switch($states);
         $grid->column('created_at', __('Created at'));
