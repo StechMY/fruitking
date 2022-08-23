@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Fruit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class ApiController extends Controller
 
         //Send failed response if request is not valid
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => $validator->messages()], 200);
+            return response()->json(['success' => false, 'error' => $validator->messages()], 200);
         }
 
         //Request is validated
@@ -109,6 +110,30 @@ class ApiController extends Controller
         $user = JWTAuth::authenticate($request->token);
 
         return response()->json(['user' => $user]);
+    }
+
+    public function get_fruits(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            // return $user;
+            if ($user->status == 0) {
+                $this->invalidToken();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account has been suspended, kindly contact admin for more information.',
+                ], 200);
+            }
+        } catch (JWTException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been suspended, kindly contact admin for more information.',
+            ], 200);
+        }
+
+        $fruits = Fruit::select('id','name','image')->where('status', 1)->get();
+
+        return response()->json(['fruits' => $fruits]);
     }
 
     public static function invalidToken()

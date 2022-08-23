@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\SalesRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SalesRecordController extends Controller
@@ -22,9 +25,38 @@ class SalesRecordController extends Controller
      */
     public function index()
     {
-        return $this->user
-            ->sales()
-            ->get();
+        try {
+            $user = Auth::user();
+            // return $user;
+            if ($user->status == 0) {
+                $this->invalidToken();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account has been suspended, kindly contact admin for more information.',
+                ], 200);
+            }
+        } catch (JWTException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been suspended, kindly contact admin for more information.',
+            ], 200);
+        }
+
+        $sales = $this->user->sales()->get(array(
+            DB::raw('products'),
+            DB::raw('total_sales'),
+            DB::raw('total_commission'),
+            DB::raw('Date(created_at) as date'),
+
+        ));
+        foreach ($sales as $data){
+            foreach ($data->products as $detail){
+                $data[$detail['name']] = $detail['quantity'];
+            }
+            unset($data->products);
+        }
+        return $sales;
+        return response()->json([$data,$data]);
     }
 
     /**
@@ -45,6 +77,22 @@ class SalesRecordController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $user = Auth::user();
+            // return $user;
+            if ($user->status == 0) {
+                $this->invalidToken();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your account has been suspended, kindly contact admin for more information.',
+                ], 200);
+            }
+        } catch (JWTException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account has been suspended, kindly contact admin for more information.',
+            ], 200);
+        }
         //Validate data
         $data = $request->only('products');
         $validator = Validator::make($data, [
@@ -115,5 +163,11 @@ class SalesRecordController extends Controller
     public function destroy(SalesRecord $salesRecord)
     {
         //
+    }
+
+    public static function invalidToken()
+    {
+        $current_token = JWTAuth::getToken();
+        JWTAuth::setToken($current_token)->invalidate();
     }
 }

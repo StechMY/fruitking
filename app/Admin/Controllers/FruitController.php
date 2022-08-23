@@ -108,22 +108,23 @@ class FruitController extends AdminController
         $form->saved(function (Form $form) {
             global $stockbefore;
             $fruit = Fruit::find($form->model()->id);
-            if ($form->model()->stock != $stockbefore){
+            if ($form->model()->stock != $stockbefore) {
                 $fruit->record()->create([
                     'stock_before' => $stockbefore,
                     'quantity' => $form->model()->stock - $stockbefore,
                     'stock_after' => $form->model()->stock,
-                    'remarks' => 'Admin Update Stock' 
+                    'remarks' => 'Admin 更新库存'
                 ]);
             }
         });
         return $form;
     }
 
-    public function takefruit(Request $request){
+    public function takefruit(Request $request)
+    {
         $agent = Administrator::find($request->agent);
-        foreach ($request->data as $data){
-            if($data['number'] > 0){
+        foreach ($request->data as $data) {
+            if ($data['number'] > 0) {
                 $fruit = Fruit::find($data['id']);
                 $stok_before = $fruit->stock;
                 $fruit->stock -= $data['number'];
@@ -136,7 +137,7 @@ class FruitController extends AdminController
                     'stock_before' =>  $stok_before,
                     'quantity' =>  $data['number'],
                     'stock_after' =>  $stok_after,
-                    'remarks' => $agent->username .' take stock',
+                    'remarks' => $agent->username . ' 取货',
                 ]);
             }
         }

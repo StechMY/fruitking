@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function index(Content $content)
     {
         if (FacadesAdmin::user()->isAdministrator()) {
-            return redirect('/admin/sales-records');
+            return redirect('/admin/fruits');
         } else {
             Admin::script('const buttons = document.querySelectorAll(".button-custom");
             const minValue = 0;
@@ -187,8 +187,7 @@ class HomeController extends Controller
                       confirmButtonText: "確定",
                       cancelButtonText: "取消"
                     }).then((result) => {
-                      if (result.isConfirmed) {
-                        console.log("???");
+                      if (result.value) {
                         $.ajaxSetup({
                           headers: {
                               "X-CSRF-TOKEN": $("meta[name='."csrf-token".']").attr("content")
@@ -204,7 +203,10 @@ class HomeController extends Controller
                               "成功!",
                               "此動作已被記錄.",
                               "success"
-                            )
+                            );
+                            numbers.forEach((div) => {
+                              div.textContent = 0;
+                          });
                           },
                           error: function (data) {
                               console.log(data);
