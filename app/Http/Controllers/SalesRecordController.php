@@ -49,14 +49,32 @@ class SalesRecordController extends Controller
             DB::raw('Date(created_at) as date'),
 
         ));
-        foreach ($sales as $data){
-            foreach ($data->products as $detail){
+        foreach ($sales as $data) {
+            foreach ($data->products as $detail) {
                 $data[$detail['name']] = $detail['quantity'];
             }
             unset($data->products);
         }
+        $sales = $sales->groupBy('date');
+        foreach ($sales as $date) {
+            foreach ($date as $detail) {
+                if ($detail) {
+
+                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales', 'date'])->toArray();
+                    foreach ($fruitcolumn as $fruitkey => $value) {
+                        $date->contains($fruitkey) ? $date->$fruitkey += $value : $date->put($fruitkey, $value);
+                        return $sales;
+                    }
+                }
+                // $date[$fruit];
+                // $date[$detail]
+            }
+            $date['total_sales'] = $date->sum('total_sales');
+            $date['total_commission'] = $date->sum('total_commission');
+            // unset($sales[$key]);
+        }
         return $sales;
-        return response()->json([$data,$data]);
+        return response()->json([$data, $data]);
     }
 
     /**
