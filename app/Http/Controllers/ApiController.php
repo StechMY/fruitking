@@ -133,7 +133,7 @@ class ApiController extends Controller
 
         $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
 
-        return response()->json(['fruits' => $fruits]);
+        return response()->json(['success' => true, 'fruits' => $fruits]);
     }
 
     public static function invalidToken()

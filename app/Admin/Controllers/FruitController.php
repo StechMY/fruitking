@@ -6,6 +6,7 @@ use App\Models\Fruit;
 use App\Models\StockRecord;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
+use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
@@ -91,14 +92,13 @@ class FruitController extends AdminController
         $form->decimal('sales_price', __('Sales price'))->required();
         $form->decimal('commission_price', __('Commission price'))->required();
         $form->image('image', __('Image'))->required();
-        $form->number('stock', __('Stock'))->default('0')->required();
+        $form->number('stock', __('Stock'))->default('0')->required()->rules('gt:-1|numeric');
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'success'],
             'off' => ['value' => 0, 'text' => 'Off', 'color' => 'danger'],
         ];
         $form->switch('status', __('Status'))->default('1')->states($states)->required();
         global $stockbefore;
-        $stockbefore = 0;
         $form->saving(function (Form $form) {
             if ($form->isEditing()) {
                 $before = Fruit::find($form->model()->id);
@@ -111,6 +111,7 @@ class FruitController extends AdminController
             $fruit = Fruit::find($form->model()->id);
             if ($form->model()->stock != $stockbefore) {
                 $fruit->record()->create([
+                    'from_id' => Admin::user()->id,
                     'stock_before' => $stockbefore,
                     'quantity' => $form->model()->stock - $stockbefore,
                     'stock_after' => $form->model()->stock,

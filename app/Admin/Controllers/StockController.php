@@ -30,6 +30,7 @@ class StockController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new StockRecord());
+        $grid->model()->orderBy('id','DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
