@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Fruit;
 use App\Models\SalesRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,40 +42,61 @@ class SalesRecordController extends Controller
                 'message' => 'Your account has been suspended, kindly contact admin for more information.',
             ], 200);
         }
-
-        $sales = $this->user->sales()->get(array(
+        $allsales = collect();
+        $salesrecord = $this->user->sales()->get(array(
             DB::raw('products'),
             DB::raw('total_sales'),
             DB::raw('total_commission'),
             DB::raw('Date(created_at) as date'),
+            DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date")
 
         ));
-        foreach ($sales as $data) {
+        foreach ($salesrecord as $data) {
             foreach ($data->products as $detail) {
                 $data[$detail['name']] = $detail['quantity'];
             }
             unset($data->products);
         }
-        $sales = $sales->groupBy('date');
-        foreach ($sales as $date) {
-            foreach ($date as $detail) {
-                if ($detail) {
-
-                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales', 'date'])->toArray();
-                    foreach ($fruitcolumn as $fruitkey => $value) {
-                        $date->contains($fruitkey) ? $date->$fruitkey += $value : $date->put($fruitkey, $value);
-                        return $sales;
-                    }
-                }
-                // $date[$fruit];
-                // $date[$detail]
-            }
+        $salesdaily = $salesrecord->groupBy('date');
+        $salesmonthly = $salesrecord->groupBy('new_date');
+        foreach ($salesdaily as $date) {
             $date['total_sales'] = $date->sum('total_sales');
             $date['total_commission'] = $date->sum('total_commission');
-            // unset($sales[$key]);
+            foreach ($date as $datekey => $detail) {
+                if (is_int($datekey)) {
+                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales', 'date', 'new_date'])->toArray();
+                    foreach ($fruitcolumn as $fruitkey => $value) {
+                        if (isset($date[$fruitkey])) {
+                            $date[$fruitkey] += $value;
+                        } else {
+                            $date->put($fruitkey, $value);
+                        }
+                    }
+                    unset($date[$datekey]);
+                }
+            }
         }
-        return $sales;
-        return response()->json([$data, $data]);
+        foreach ($salesmonthly as $month) {
+            $month['total_sales'] = $month->sum('total_sales');
+            $month['total_commission'] = $month->sum('total_commission');
+            foreach ($month as $monthkey => $detail) {
+                if (is_int($monthkey)) {
+                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales',  'date', 'new_date'])->toArray();
+                    foreach ($fruitcolumn as $fruitkey => $value) {
+                        if (isset($month[$fruitkey])) {
+                            $month[$fruitkey] += $value;
+                        } else {
+                            $month->put($fruitkey, $value);
+                        }
+                    }
+                    unset($month[$monthkey]);
+                }
+            }
+        }
+        $allsales->put('daily', $salesdaily);
+        $allsales->put('monthly', $salesmonthly);
+
+        return response()->json($allsales);
     }
 
     /**
@@ -121,13 +143,31 @@ class SalesRecordController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->messages()], 200);
         }
+        $newdata = collect();
+        $totalcommission = 0;
+        $totalsales = 0;
+        foreach ($request->products as $data){
+            $fruit = Fruit::find($data->product_id);
+            $sales_price = $fruit->sales_price;
+            $commission_price = $fruit->commission_price;
+            $fruitname = $fruit->name;
+            $fruitdata = [
+                'fruitname' => $fruitname,
+                'sales_price' => $sales_price,
+                'commission_price' => $commission_price,
+                'quantity' => $data->quantity
+            ];
+            $totalcommission += $commission_price;
+            $totalsales += $sales_price;
+            $newdata->push($fruitdata);
+        }
 
         //Request is valid, create new product
         $product = $this->user->sales()->create([
             'user_id' => $this->user->id,
-            'products' => $request->products,
-            'total_sales' => 1,
-            'total_commission' => 1
+            'products' => $newdata,
+            'total_sales' => $totalsales,
+            'total_commission' => $totalcommission
         ]);
 
         //Product created, return success response
