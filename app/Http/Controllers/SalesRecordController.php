@@ -53,7 +53,7 @@ class SalesRecordController extends Controller
         ));
         foreach ($salesrecord as $data) {
             foreach ($data->products as $detail) {
-                $data[$detail['name']] = $detail['quantity'];
+                $data[$detail['fruitname']] = $detail['quantity'];
             }
             unset($data->products);
         }
@@ -146,7 +146,7 @@ class SalesRecordController extends Controller
         $newdata = collect();
         $totalcommission = 0;
         $totalsales = 0;
-        foreach ($request->products as $data){
+        foreach (json_decode($request->products) as $data) {
             $fruit = Fruit::find($data->product_id);
             $sales_price = $fruit->sales_price;
             $commission_price = $fruit->commission_price;
@@ -157,8 +157,8 @@ class SalesRecordController extends Controller
                 'commission_price' => $commission_price,
                 'quantity' => $data->quantity
             ];
-            $totalcommission += $commission_price;
-            $totalsales += $sales_price;
+            $totalcommission += $commission_price * $data->quantity;
+            $totalsales += $sales_price * $data->quantity;
             $newdata->push($fruitdata);
         }
 
