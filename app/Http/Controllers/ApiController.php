@@ -131,7 +131,7 @@ class ApiController extends Controller
             ], 200);
         }
 
-        $fruits = Fruit::select('id','name','image')->where('status', 1)->orderBy('name','asc')->get();
+        $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
 
         return response()->json(['fruits' => $fruits]);
     }

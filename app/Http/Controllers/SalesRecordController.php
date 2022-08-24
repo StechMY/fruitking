@@ -75,6 +75,12 @@ class SalesRecordController extends Controller
                     unset($date[$datekey]);
                 }
             }
+            $datecolumn = collect($date)->except(['total_commission', 'total_sales'])->toArray();
+            $date['fruits'] = collect();
+            foreach ($datecolumn as $columnkey => $data) {
+                $date['fruits']->push(['name' => $columnkey, 'qty' => $data]);
+                unset($date[$columnkey]);
+            }
         }
         foreach ($salesmonthly as $month) {
             $month['total_sales'] = $month->sum('total_sales');
@@ -91,6 +97,12 @@ class SalesRecordController extends Controller
                     }
                     unset($month[$monthkey]);
                 }
+            }
+            $monthcolumn = collect($month)->except(['total_commission', 'total_sales'])->toArray();
+            $month['fruits'] = collect();
+            foreach ($monthcolumn as $columnkey => $data) {
+                $month['fruits']->push(['name' => $columnkey, 'qty' => $data]);
+                unset($month[$columnkey]);
             }
         }
         $allsales->put('daily', $salesdaily);
@@ -147,7 +159,7 @@ class SalesRecordController extends Controller
         $totalcommission = 0;
         $totalsales = 0;
         foreach (json_decode($request->products) as $data) {
-            $fruit = Fruit::find($data->product_id);
+            $fruit = Fruit::find($data->id);
             $sales_price = $fruit->sales_price;
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
@@ -155,10 +167,10 @@ class SalesRecordController extends Controller
                 'fruitname' => $fruitname,
                 'sales_price' => $sales_price,
                 'commission_price' => $commission_price,
-                'quantity' => $data->quantity
+                'quantity' => $data->qty
             ];
-            $totalcommission += $commission_price * $data->quantity;
-            $totalsales += $sales_price * $data->quantity;
+            $totalcommission += $commission_price * $data->qty;
+            $totalsales += $sales_price * $data->qty;
             $newdata->push($fruitdata);
         }
 
