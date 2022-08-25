@@ -54,7 +54,6 @@ class SalesRecordController extends Controller
         ));
         $salesdaily = $salesrecord->groupBy('date');
         $salesmonthly = $salesrecord->groupBy('new_date');
-        return $salesmonthly;
         foreach ($salesdaily as $datekey => $date) {
             $date['total_sales'] = $date->sum('total_sales');
             $date['total_commission'] = $date->sum('total_commission');
@@ -111,8 +110,10 @@ class SalesRecordController extends Controller
         }
         $allsales->put('daily', $salesdaily);
         $allsales->put('monthly', $salesmonthly);
+        $alltotalsales = $salesrecord->sum('total_sales');
+        $allsales->put('all_total_sales', $alltotalsales);
 
-        return response()->json($allsales);
+        return response()->json(['success' => true, 'record' => $allsales]);
     }
 
     /**
