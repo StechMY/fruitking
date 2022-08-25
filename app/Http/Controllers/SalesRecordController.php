@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\MockObject\Stub\ReturnReference;
 use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -48,62 +49,65 @@ class SalesRecordController extends Controller
             DB::raw('total_sales'),
             DB::raw('total_commission'),
             DB::raw('Date(created_at) as date'),
-            DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date")
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') new_date")
 
         ));
-        foreach ($salesrecord as $data) {
-            foreach ($data->products as $detail) {
-                $data[$detail['fruitname']] = $detail['quantity'];
-            }
-            unset($data->products);
-        }
         $salesdaily = $salesrecord->groupBy('date');
         $salesmonthly = $salesrecord->groupBy('new_date');
-        foreach ($salesdaily as $date) {
+        return $salesmonthly;
+        foreach ($salesdaily as $datekey => $date) {
             $date['total_sales'] = $date->sum('total_sales');
             $date['total_commission'] = $date->sum('total_commission');
-            foreach ($date as $datekey => $detail) {
-                if (is_int($datekey)) {
-                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales', 'date', 'new_date'])->toArray();
-                    foreach ($fruitcolumn as $fruitkey => $value) {
-                        if (isset($date[$fruitkey])) {
-                            $date[$fruitkey] += $value;
+            $tempfruits = array(['fruitname'=>'jiashen']);
+
+            foreach ($date as $detailkey => $detail) {
+                if (is_int($detailkey)) {
+                    foreach ($detail->products as $value) {
+                        if ($matchkey = array_search($value['fruitname'], array_column($tempfruits, 'fruitname'))) {
+                            // return $value['fruitname'];
+                            // return array_column($tempfruits, 'fruitname');
+                            $tempfruits[$matchkey]['qty'] += $value['quantity'];
+                            $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
                         } else {
-                            $date->put($fruitkey, $value);
+                            $newfruit = [
+                                'fruitname' => $value['fruitname'],
+                                'qty' => $value['quantity'],
+                                'total_sales' => $value['sales_price'] * $value['quantity'],
+                            ];
+                            array_push($tempfruits, $newfruit);
                         }
                     }
-                    unset($date[$datekey]);
+                    unset($salesdaily[$datekey][$detailkey]);
                 }
             }
-            $datecolumn = collect($date)->except(['total_commission', 'total_sales'])->toArray();
-            $date['fruits'] = collect();
-            foreach ($datecolumn as $columnkey => $data) {
-                $date['fruits']->push(['name' => $columnkey, 'qty' => $data]);
-                unset($date[$columnkey]);
-            }
+            unset($tempfruits[0]);
+            $date['fruits'] = array_values($tempfruits);
         }
-        foreach ($salesmonthly as $month) {
+        // return $salesmonthly;
+        foreach ($salesmonthly as $monthkey => $month) {
             $month['total_sales'] = $month->sum('total_sales');
             $month['total_commission'] = $month->sum('total_commission');
-            foreach ($month as $monthkey => $detail) {
-                if (is_int($monthkey)) {
-                    $fruitcolumn = collect($detail)->except(['total_commission', 'total_sales',  'date', 'new_date'])->toArray();
-                    foreach ($fruitcolumn as $fruitkey => $value) {
-                        if (isset($month[$fruitkey])) {
-                            $month[$fruitkey] += $value;
+            $tempfruits = array(['fruitname'=>'jiashen']);
+            foreach ($month as $detailkey => $detail) {
+                if (is_int($detailkey)) {
+                    foreach ($detail->products as $value) {
+                        if ($matchkey = array_search($value['fruitname'], array_column($tempfruits, 'fruitname'))) {
+                            $tempfruits[$matchkey]['qty'] += $value['quantity'];
+                            $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
                         } else {
-                            $month->put($fruitkey, $value);
+                            $newfruit = [
+                                'fruitname' => $value['fruitname'],
+                                'qty' => $value['quantity'],
+                                'total_sales' => $value['sales_price'] * $value['quantity'],
+                            ];
+                            array_push($tempfruits, $newfruit);
                         }
                     }
-                    unset($month[$monthkey]);
+                    unset($salesmonthly[$monthkey][$detailkey]);
                 }
             }
-            $monthcolumn = collect($month)->except(['total_commission', 'total_sales'])->toArray();
-            $month['fruits'] = collect();
-            foreach ($monthcolumn as $columnkey => $data) {
-                $month['fruits']->push(['name' => $columnkey, 'qty' => $data]);
-                unset($month[$columnkey]);
-            }
+            unset($tempfruits[0]);
+            $month['fruits'] = array_values($tempfruits);
         }
         $allsales->put('daily', $salesdaily);
         $allsales->put('monthly', $salesmonthly);
@@ -158,8 +162,8 @@ class SalesRecordController extends Controller
         $newdata = collect();
         $totalcommission = 0;
         $totalsales = 0;
-        foreach (json_decode($request->products) as $data) {
-            $fruit = Fruit::find($data->id);
+        foreach ($request->products as $data) {
+            $fruit = Fruit::find($data['id']);
             $sales_price = $fruit->sales_price;
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
@@ -167,10 +171,10 @@ class SalesRecordController extends Controller
                 'fruitname' => $fruitname,
                 'sales_price' => $sales_price,
                 'commission_price' => $commission_price,
-                'quantity' => $data->qty
+                'quantity' => $data['qty']
             ];
-            $totalcommission += $commission_price * $data->qty;
-            $totalsales += $sales_price * $data->qty;
+            $totalcommission += $commission_price * $data['qty'];
+            $totalsales += $sales_price * $data['qty'];
             $newdata->push($fruitdata);
         }
 
