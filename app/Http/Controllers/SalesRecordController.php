@@ -57,7 +57,7 @@ class SalesRecordController extends Controller
         foreach ($salesdaily as $datekey => $date) {
             $date['total_sales'] = $date->sum('total_sales');
             $date['total_commission'] = $date->sum('total_commission');
-            $tempfruits = array(['fruitname'=>'jiashen']);
+            $tempfruits = array(['fruitname' => 'jiashen']);
 
             foreach ($date as $detailkey => $detail) {
                 if (is_int($detailkey)) {
@@ -86,7 +86,7 @@ class SalesRecordController extends Controller
         foreach ($salesmonthly as $monthkey => $month) {
             $month['total_sales'] = $month->sum('total_sales');
             $month['total_commission'] = $month->sum('total_commission');
-            $tempfruits = array(['fruitname'=>'jiashen']);
+            $tempfruits = array(['fruitname' => 'jiashen']);
             foreach ($month as $detailkey => $detail) {
                 if (is_int($detailkey)) {
                     foreach ($detail->products as $value) {
@@ -109,7 +109,11 @@ class SalesRecordController extends Controller
             $month['fruits'] = array_values($tempfruits);
         }
         $allsales->put('daily', $salesdaily);
-        $allsales->put('monthly', $salesmonthly);
+        $newformatmonth = collect();
+        foreach ($salesmonthly as $monthkey => $data) {
+            $newformatmonth->put($monthkey . '-01', $data);
+        }
+        $allsales->put('monthly', $newformatmonth);
         $alltotalsales = $salesrecord->sum('total_sales');
         $allsales->put('all_total_sales', $alltotalsales);
 
