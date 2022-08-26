@@ -16,16 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('login', [ApiController::class, 'authenticate']);
 Route::post('register', [ApiController::class, 'register']);
+Route::get('get-fruits', [ApiController::class, 'get_fruits']);
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('sales', [SalesRecordController::class, 'store']);
     Route::get('logout', [ApiController::class, 'logout']);
     Route::get('sales-records',[SalesRecordController::class, 'index']);
-    Route::get('get-fruits', [ApiController::class, 'get_fruits']);
 });
