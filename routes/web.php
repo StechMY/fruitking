@@ -18,5 +18,5 @@ Route::post('/admin/takefruit', [FruitController::class, 'takefruit']);
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin');
 });

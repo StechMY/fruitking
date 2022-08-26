@@ -20,6 +20,7 @@
 
 use App\Models\Fruit;
 use Encore\Admin\Facades\Admin;
+use Illuminate\Support\Facades\Auth;
 
 Encore\Admin\Form::forget(['map', 'editor']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
@@ -28,6 +29,9 @@ $message = '';
 foreach ($stockless as $data) {
     $message .= $data->name . " 需要及時補貨 所剩: " . $data->stock . '<br>';
 }
-if ($stockless->count() > 0 && Admin::user()->isAdministrator()) {
-    admin_warning('倉庫數量不足', $message);
+if (Auth::check()){
+    if ($stockless->count() > 0 && Admin::user()->isAdministrator()) {
+        admin_warning('倉庫數量不足', $message);
+    }
 }
+
