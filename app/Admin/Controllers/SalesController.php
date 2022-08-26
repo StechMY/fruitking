@@ -53,7 +53,7 @@ class SalesController extends AdminController
         }
         $grid->column('id', __('Id'));
         $grid->column('user.username', __('User'));
-        $grid->column('products', __('Products'));
+        $grid->column('products', __('Products'))->table();
         $grid->column('total_sales', __('Total sales'));
         $grid->column('total_commission', __('Total commission'));
         $grid->column('created_at', __('Created at'));
