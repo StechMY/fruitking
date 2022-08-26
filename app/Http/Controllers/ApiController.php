@@ -114,6 +114,7 @@ class ApiController extends Controller
 
     public function get_fruits(Request $request)
     {
+        return 1;
         try {
             $user = Auth::user();
             // return $user;
