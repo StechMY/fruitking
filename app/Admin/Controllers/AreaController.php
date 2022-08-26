@@ -63,8 +63,8 @@ class AreaController extends AdminController
     {
         $form = new Form(new AreaCode());
 
-        $form->text('name', __('Name'));
-        $form->text('code', __('Code'));
+        $form->text('name', __('Name'))->required();
+        $form->text('code', __('Code'))->required();
 
         return $form;
     }
