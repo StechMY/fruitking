@@ -104,20 +104,28 @@ class FruitController extends AdminController
                 $before = Fruit::find($form->model()->id);
                 global $stockbefore;
                 $stockbefore = $before->stock;
+            }else {
+                global $stockbefore;
+                $stockbefore = 0;
             }
         });
         $form->saved(function (Form $form) {
             global $stockbefore;
             $fruit = Fruit::find($form->model()->id);
-            if ($form->model()->stock != $stockbefore) {
-                $fruit->record()->create([
-                    'from_id' => Admin::user()->id,
-                    'stock_before' => $stockbefore,
-                    'quantity' => $form->model()->stock - $stockbefore,
-                    'stock_after' => $form->model()->stock,
-                    'remarks' => 'Admin 更新库存'
-                ]);
+            if($fruit){
+                if ($form->model()->stock != $stockbefore) {
+                    $fruit->record()->create([
+                        'from_id' => Admin::user()->id,
+                        'stock_before' => $stockbefore,
+                        'quantity' => $form->model()->stock - $stockbefore,
+                        'stock_after' => $form->model()->stock,
+                        'remarks' => 'Admin 更新库存'
+                    ]);
+                }
+            }else {
+
             }
+            
         });
         return $form;
     }
