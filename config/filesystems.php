@@ -69,7 +69,7 @@ return [
             'driver'     => 'local',
             'root'       => public_path(),
             'visibility' => 'public',
-            'url' => env('APP_URL') . ':8000/',
+            'url' => env('APP_URL') . '/',
         ],
 
     ],
