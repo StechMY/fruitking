@@ -28,7 +28,7 @@ class SalesController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new SalesRecord());
-        $grid->model()->orderBy('id','DESC');
+        $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -53,7 +53,28 @@ class SalesController extends AdminController
         }
         $grid->column('id', __('Id'));
         $grid->column('user.username', __('User'));
-        $grid->column('products', __('Products'))->table();
+        $grid->column('products', __('Products'))->display(function ($data) {
+            $htmlrender = '<table class="table table-hover" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                        <th>水果</th>
+                        <th>數量</th>
+                        <th>單個售價</th>
+                        <th>單個佣金</th>
+                    </tr>
+            </thead>
+            <tbody>';
+            foreach ($data as $value) {
+                $htmlrender .= '<tr>
+                <td>' . $value['fruitname'] . '</td>
+                <td>' . $value['quantity'] . '</td>
+                <td>' . $value['sales_price'] . '</td>
+                <td>' . $value['commission_price'] . '</td>
+        </tr>';
+            }
+            $htmlrender .= '</tbody></table>';
+            return $htmlrender;
+        });
         $grid->column('total_sales', __('Total sales'));
         $grid->column('total_commission', __('Total commission'));
         $grid->column('created_at', __('Created at'));
