@@ -13,12 +13,12 @@ use Encore\Admin\Layout\Row;
 
 class HomeController extends Controller
 {
-    public function index(Content $content)
-    {
-        if (FacadesAdmin::user()->isAdministrator()) {
-            return redirect('/admin/fruits');
-        } else {
-            Admin::script('const buttons = document.querySelectorAll(".button-custom");
+  public function index(Content $content)
+  {
+    if (FacadesAdmin::user()->isAdministrator()) {
+      return redirect('/admin/fruits');
+    } else {
+      Admin::script('const buttons = document.querySelectorAll(".button-custom");
             const minValue = 0;
             const maxValue = 10000;
             
@@ -55,7 +55,7 @@ class HomeController extends Controller
                 }
               });
             });');
-            Admin::style(':root {
+      Admin::style(':root {
                 --width-container: 540px;
               }
               .container {
@@ -72,6 +72,7 @@ class HomeController extends Controller
                 // display: flex;
                 padding: var(--space-8) 0;
                 border-bottom: var(--border);
+                margin-bottom:20px;
               }
               .input-row:last-child {
                 border-bottom: 0;
@@ -80,6 +81,18 @@ class HomeController extends Controller
                 text-align:center;
                 margin-right: var(--space-8);
               }
+
+              .title img {
+                width: 100% ;
+              }
+
+              
+              @media only screen and (max-width: 991px) {
+                .title img{
+                  width: 50%;
+                }
+              }
+              
               .label {
                 margin-bottom: var(--space-1);
                 font-weight: bold;
@@ -132,16 +145,16 @@ class HomeController extends Controller
               }
               
               ');
-            return $content
-                ->title('Dashboard')
-                ->row(function (Row $row) {
-                    $fruits = Fruit::where('status', 1)->get();
-                    foreach ($fruits as $data) {
-                        $row->column(2, function (Column $column) use ($data) {
-                            $column->append('<div class="container">
+      return $content
+        ->title('Dashboard')
+        ->row(function (Row $row) {
+          $fruits = Fruit::where('status', 1)->get();
+          foreach ($fruits as $data) {
+            $row->column(2, function (Column $column) use ($data) {
+              $column->append('<div class="container">
                         <div class="input-row">
                           <div class="title">
-                            <img src="' . $data->image . '" width="100%" height="150">
+                            <img src="' . $data->image . '" height="150">
                             <h4>' . $data->name . '</h4>
                             
                           </div>
@@ -162,12 +175,12 @@ class HomeController extends Controller
                           </div>
                         </div>
                       </div>');
-                        });
-                    }
-                    $row->column(12, function (Column $column) {
-                        $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="submitStock()">提交</button></div>');
-                    });
-                    Admin::html('<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            });
+          }
+          $row->column(12, function (Column $column) {
+            $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="submitStock()">提交</button></div>');
+          });
+          Admin::html('<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>function submitStock(){
                     const numbers = document.querySelectorAll(".number");
                     var fruitarray = [];
@@ -190,13 +203,13 @@ class HomeController extends Controller
                       if (result.value) {
                         $.ajaxSetup({
                           headers: {
-                              "X-CSRF-TOKEN": $("meta[name='."csrf-token".']").attr("content")
+                              "X-CSRF-TOKEN": $("meta[name=' . "csrf-token" . ']").attr("content")
                           }
                       });
                       $.ajax({
                           type: "POST",
                           url: "/admin/takefruit",
-                          data: {data: fruitarray,agent:'.FacadesAdmin::user()->id.'},
+                          data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . '},
                           dataType: "json",
                           success: function (data) {
                             Swal.fire(
@@ -215,7 +228,7 @@ class HomeController extends Controller
                       }
                     })
                 }</script>');
-                });
-        }
+        });
     }
+  }
 }
