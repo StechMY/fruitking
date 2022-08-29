@@ -32,7 +32,7 @@ class SalesController extends AdminController
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             
-            $filter->between('created_at', 'Time')->datetime();
+            $filter->between('sales_records.created_at', 'Time')->datetime();
             if (Admin::user()->isAdministrator()) {
                 $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
                 $filter->where(function ($query) {
@@ -81,16 +81,17 @@ class SalesController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
+            // dd(request('sales_records'));
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
-            $totalsales = SalesRecord::when(request('created_at') != null, function ($q) {
-                return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
-                    return $q->where('created_at', '>', request('created_at')['start']);
+            $totalsales = SalesRecord::when(request('sales_records') != null, function ($q) {
+                return $q->when(request('sales_records')['created_at']['start'] != null && request('sales_records')['created_at']['end'] == null, function ($q) {
+                    return $q->where('created_at', '>', request('sales_records')['created_at']['start']);
                 })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
-                        return $q->where('created_at', '<', request('created_at')['end']);
+                    ->when(request('sales_records')['created_at']['end'] != null && request('sales_records')['created_at']['start'] == null, function ($q) {
+                        return $q->where('created_at', '<', request('sales_records')['created_at']['end']);
                     })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
-                        return $q->whereBetween('created_at', request('created_at'));
+                    ->when(request('sales_records')['created_at']['end'] != null && request('sales_records')['created_at']['start'] != null, function ($q) {
+                        return $q->whereBetween('created_at', request('sales_records')['created_at']);
                     });
             })
                 ->when(request('user_id') != null, function ($q) {
@@ -107,15 +108,15 @@ class SalesController extends AdminController
                     });
                 })
                 ->sum('total_sales');
-            $totalcommission = SalesRecord::when(request('created_at') != null, function ($q) {
-                return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
-                    return $q->where('created_at', '>', request('created_at')['start']);
+            $totalcommission = SalesRecord::when(request('sales_records') != null, function ($q) {
+                return $q->when(request('sales_records')['created_at']['start'] != null && request('sales_records')['created_at']['end'] == null, function ($q) {
+                    return $q->where('created_at', '>', request('sales_records')['created_at']['start']);
                 })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
-                        return $q->where('created_at', '<', request('created_at')['end']);
+                    ->when(request('sales_records')['created_at']['end'] != null && request('sales_records')['created_at']['start'] == null, function ($q) {
+                        return $q->where('created_at', '<', request('sales_records')['created_at']['end']);
                     })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
-                        return $q->whereBetween('created_at', request('created_at'));
+                    ->when(request('sales_records')['created_at']['end'] != null && request('sales_records')['created_at']['start'] != null, function ($q) {
+                        return $q->whereBetween('created_at', request('sales_records')['created_at']);
                     });
             })
                 ->when(request('user_id') != null, function ($q) {

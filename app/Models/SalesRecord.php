@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesRecord extends Model
 {
-    use HasFactory,DefaultDatetimeFormat;
+    use HasFactory, DefaultDatetimeFormat;
 
     protected $fillable = [
         'user_id', 'products', 'total_sales', 'total_commission'
@@ -21,5 +21,10 @@ class SalesRecord extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function sales_records()
+    {
+        return $this->belongsTo(SalesRecord::class, 'id', 'id');
     }
 }
