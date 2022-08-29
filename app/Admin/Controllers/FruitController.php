@@ -145,7 +145,7 @@ class FruitController extends AdminController
                     'from_id' => $request->agent,
                     'from_id' => $request->agent,
                     'stock_before' =>  $stok_before,
-                    'quantity' =>  $data['number'],
+                    'quantity' =>  - $data['number'],
                     'stock_after' =>  $stok_after,
                     'remarks' => $agent->username . ' 取货',
                 ]);
