@@ -218,7 +218,7 @@ class HomeController extends Controller
                               "success"
                             );
                             numbers.forEach((div) => {
-                              div.textContent = 0;
+                              div.value = 0;
                           });
                           },
                           error: function (data) {
