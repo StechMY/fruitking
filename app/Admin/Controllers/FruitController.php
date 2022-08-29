@@ -46,7 +46,7 @@ class FruitController extends AdminController
         $grid->column('sales_price', __('Sales price'));
         $grid->column('commission_price', __('Commission price'));
         $grid->column('image', __('Image'))->image();
-        $grid->column('stock', __('Stock'));
+        $grid->column('stock', __('Stock'))->action(StockUpdate::class);
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
             'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],

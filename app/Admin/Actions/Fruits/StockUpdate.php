@@ -36,4 +36,9 @@ class StockUpdate extends RowAction
 
         $this->text('quantity', '數量')->rules('required|numeric');
     }
+
+    public function display($value)
+    {
+        return $value;
+    }
 }
