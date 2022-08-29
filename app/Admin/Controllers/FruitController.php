@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Actions\Fruits\StockUpdate;
 use App\Models\Fruit;
 use App\Models\StockRecord;
 use Encore\Admin\Auth\Database\Administrator;
@@ -36,13 +37,16 @@ class FruitController extends AdminController
             $filter->like('name', __('Name'));
             $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
+        $grid->actions(function ($actions) {
+            $actions->add(new StockUpdate);
+        });
         $grid->column('id', __('Id'));
         $grid->column('name', __('Name'));
         // $grid->column('ori_price', __('Ori price'));
         $grid->column('sales_price', __('Sales price'));
         $grid->column('commission_price', __('Commission price'));
         $grid->column('image', __('Image'))->image();
-        $grid->column('stock', __('Stock'))->editable();
+        $grid->column('stock', __('Stock'));
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
             'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],

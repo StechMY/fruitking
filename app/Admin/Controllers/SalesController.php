@@ -31,6 +31,7 @@ class SalesController extends AdminController
         $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
+            
             $filter->between('created_at', 'Time')->datetime();
             if (Admin::user()->isAdministrator()) {
                 $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));

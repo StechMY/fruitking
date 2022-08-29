@@ -30,7 +30,7 @@ class HomeController extends Controller
                 const parent = element.parentNode;
                 // 3. Get the number (within the parent)
                 const numberContainer = parent.querySelector(".number");
-                const number = parseFloat(numberContainer.textContent);
+                const number = parseFloat(numberContainer.value);
                 // 4. Get the minus and plus buttons
                 const increment = parent.querySelector(".plus");
                 const decrement = parent.querySelector(".minus");
@@ -38,7 +38,7 @@ class HomeController extends Controller
                 const newNumber = element.classList.contains("plus")
                   ? number + 1
                   : number - 1;
-                numberContainer.textContent = newNumber;
+                numberContainer.value = newNumber;
                 // 6. Disable and enable buttons based on number value (and undim number)
                 if (newNumber === minValue) {
                   decrement.disabled = true;
@@ -50,7 +50,7 @@ class HomeController extends Controller
                   numberContainer.classList.remove("dim");
                 } else if (newNumber === maxValue) {
                   increment.disabled = true;
-                  numberContainer.textContent = `${newNumber}+`;
+                  numberContainer.value = `${newNumber}+`;
                   element.blur();
                 }
               });
@@ -151,7 +151,7 @@ class HomeController extends Controller
                                 <line y1="1" x2="16" y2="1" stroke="#0064FE" stroke-width="2" class="icon" />
                               </svg>
                             </button>
-                            <div class="number dim" id="' . $data->id . '">0</div>
+                            <input type="number" class="number dim" id="' . $data->id . '" value="0">
                             <button class="button-custom plus" aria-label="Increase by one">
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                                 <line x1="8" y1="4.37114e-08" x2="8" y2="16" stroke="#0064FE" stroke-width="2" />
@@ -174,7 +174,7 @@ class HomeController extends Controller
                     numbers.forEach((div) => {
                         fruitarray.push({
                             id: div.id,
-                            number: div.textContent
+                            number: div.value
                         });
                     });
                     Swal.fire({
