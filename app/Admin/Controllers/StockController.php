@@ -30,12 +30,12 @@ class StockController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new StockRecord());
-        $grid->model()->orderBy('id','DESC');
+        $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
             $filter->equal('fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
-            $filter->equal('from_id',' From')->select(Administrator::whereExists(function ($query) {
+            $filter->equal('from_id', ' From')->select(Administrator::whereExists(function ($query) {
                 $query->select(DB::raw('role_id', 'user_id'))
                     ->from('admin_role_users')
                     ->where('admin_role_users.role_id', 2)
@@ -47,15 +47,19 @@ class StockController extends AdminController
             $batch->disableDelete();
         });
         $grid->disableCreateButton();
-        if (!Admin::user()->isAdministrator()){
-            $grid->model()->where('from_id',Admin::user()->id);
+        if (!Admin::user()->isAdministrator()) {
+            $grid->model()->where('from_id', Admin::user()->id);
         }
         $grid->column('id', __('Id'));
         $grid->column('from.username', __('From'));
         $grid->column('fruit.name', __('Fruit'));
-        $grid->column('stock_before', __('Stock before'));
+        if (Admin::user()->isAdministrator()) {
+            $grid->column('stock_before', __('Stock before'));
+        }
         $grid->column('quantity', __('Quantity'));
-        $grid->column('stock_after', __('Stock after'));
+        if (Admin::user()->isAdministrator()) {
+            $grid->column('stock_after', __('Stock after'));
+        }
         $grid->column('remarks', __('Remarks'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
@@ -100,7 +104,7 @@ class StockController extends AdminController
     //     $form->number('quantity', __('Quantity'));
     //     $form->number('stock_after', __('Stock after'));
     //     $form->text('remarks', __('Remarks'));
-       
+
     //     return $form;
     // }
 }

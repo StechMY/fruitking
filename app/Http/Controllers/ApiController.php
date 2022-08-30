@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AgentStock;
 use App\Models\Fruit;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -130,7 +131,7 @@ class ApiController extends Controller
                 'message' => 'Your account has been suspended, kindly contact admin for more information.',
             ], 200);
         }
-
+        $fruits = AgentStock::with('fruit')
         $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
 
         return response()->json(['success' => true, 'fruits' => $fruits]);

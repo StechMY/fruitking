@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AgentStock;
 use App\Models\Fruit;
 use App\Models\SalesRecord;
 use Illuminate\Http\Request;
@@ -177,6 +178,30 @@ class SalesRecordController extends Controller
             $totalcommission += $commission_price * $data['qty'];
             $totalsales += $sales_price * $data['qty'];
             $newdata->push($fruitdata);
+
+            $agentstock = AgentStock::where('agent_id',$this->user->agent_id)->where('fruit_id',$data['id'])->first();
+            if ($agentstock->stock_pack >= $data['qty']){
+                $agentstockbefore = $agentstock->stock_pack;
+                $agentstock->stock_pack -= $data['qty'];
+                $agentstock->save();
+                if ($agentstock->stock_pack <= 0){
+                    $agentstock->status = 0;
+                    $agentstock->save();
+                }
+                $agentstockafter = $agentstock->stock_pack;
+                $agentstock->agentstock()->create([
+                    'stock_before' => $agentstockbefore,
+                    'quantity' => $data['qty'],
+                    'stock_after' => $agentstockafter,
+                    'remarks' => $this->user->username . '賣出'
+                ]);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $agentstock->fruit->name.' stock is not enough',
+                    'data' => $agentstock
+                ], 200);
+            }
         }
 
         //Request is valid, create new product

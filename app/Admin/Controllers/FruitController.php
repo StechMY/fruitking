@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Actions\Fruits\StockUpdate;
+use App\Models\AgentStock;
 use App\Models\Fruit;
 use App\Models\StockRecord;
 use Encore\Admin\Auth\Database\Administrator;
@@ -108,7 +109,7 @@ class FruitController extends AdminController
                 $before = Fruit::find($form->model()->id);
                 global $stockbefore;
                 $stockbefore = $before->stock;
-            }else {
+            } else {
                 global $stockbefore;
                 $stockbefore = 0;
             }
@@ -116,7 +117,7 @@ class FruitController extends AdminController
         $form->saved(function (Form $form) {
             global $stockbefore;
             $fruit = Fruit::find($form->model()->id);
-            if($fruit){
+            if ($fruit) {
                 if ($form->model()->stock != $stockbefore) {
                     $fruit->record()->create([
                         'from_id' => Admin::user()->id,
@@ -126,10 +127,8 @@ class FruitController extends AdminController
                         'remarks' => 'Admin 更新库存'
                     ]);
                 }
-            }else {
-
+            } else {
             }
-            
         });
         return $form;
     }
@@ -149,10 +148,19 @@ class FruitController extends AdminController
                     'from_id' => $request->agent,
                     'from_id' => $request->agent,
                     'stock_before' =>  $stok_before,
-                    'quantity' =>  - $data['number'],
+                    'quantity' =>  -$data['number'],
                     'stock_after' =>  $stok_after,
                     'remarks' => $agent->username . ' 取货',
                 ]);
+                AgentStock::firstOrCreate(
+                    [
+                        'agent_id' => Admin::user()->id,
+                        'fruit_id' => $data['id']
+                    ],
+                    [
+                        'stock_pack' => 0,
+                    ]
+                );
             }
         }
         return response()->json('Ok');
