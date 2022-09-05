@@ -45,7 +45,7 @@ class AgentStockRecordController extends AdminController
             
         });
         $grid->column('id', __('Id'));
-        $grid->column('agentstock_id', __('Agentstock'))->display(function ($data) {
+        $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
             $model = AgentStock::find($data);
             $fruitid = $model->fruit_id;
             $fruit = Fruit::find($fruitid);
