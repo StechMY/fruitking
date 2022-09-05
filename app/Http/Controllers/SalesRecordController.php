@@ -190,7 +190,7 @@ class SalesRecordController extends Controller
             $agentstockafter = $agentstock->stock_pack;
             $agentstock->record()->create([
                 'stock_before' => $agentstockbefore,
-                'quantity' => $data['qty'],
+                'quantity' => -($data['qty']),
                 'stock_after' => $agentstockafter,
                 'remarks' => $this->user->username . '賣出'
             ]);
