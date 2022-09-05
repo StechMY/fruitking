@@ -161,6 +161,17 @@ class SalesRecordController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->messages()], 200);
         }
+        foreach ($request->products as $data) {
+            $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
+            $fruit = Fruit::find($data['id']);
+            if ($agentstock->status != 1){
+                return response()->json([
+                    'success' => false,
+                    'message' => $fruit->name.' is not available',
+                    'data' => $agentstock
+                ], 200);
+            }
+        }
         $newdata = collect();
         $totalcommission = 0;
         $totalsales = 0;
