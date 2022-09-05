@@ -183,10 +183,10 @@ class SalesRecordController extends Controller
             $agentstockbefore = $agentstock->stock_pack;
             $agentstock->stock_pack -= $data['qty'];
             $agentstock->save();
-            if ($agentstock->stock_pack <= 0) {
-                $agentstock->status = 0;
-                $agentstock->save();
-            }
+            // if ($agentstock->stock_pack <= 0) {
+            //     $agentstock->status = 0;
+            //     $agentstock->save();
+            // }
             $agentstockafter = $agentstock->stock_pack;
             $agentstock->record()->create([
                 'stock_before' => $agentstockbefore,
