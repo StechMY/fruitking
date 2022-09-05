@@ -189,7 +189,7 @@ class SalesRecordController extends Controller
                     $agentstock->save();
                 }
                 $agentstockafter = $agentstock->stock_pack;
-                $agentstock->agentstock()->create([
+                $agentstock->record()->create([
                     'stock_before' => $agentstockbefore,
                     'quantity' => $data['qty'],
                     'stock_after' => $agentstockafter,

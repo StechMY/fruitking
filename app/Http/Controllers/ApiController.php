@@ -131,8 +131,11 @@ class ApiController extends Controller
                 'message' => 'Your account has been suspended, kindly contact admin for more information.',
             ], 200);
         }
-        $fruits = AgentStock::with('fruit')
-        $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
+        $user = auth()->user();
+        $agent = $user->agent->id;
+        $fruits = AgentStock::with('fruit:id,name,image,sales_price')->where('agent_id',$agent)->where('status',1)->where('stock_pack','>',0)->get()->pluck('fruit')->sortByDesc('name');;
+        // $fruits = $fruits->orderBy('name','asc');
+        // $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
 
         return response()->json(['success' => true, 'fruits' => $fruits]);
     }

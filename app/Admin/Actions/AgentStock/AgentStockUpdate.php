@@ -18,13 +18,14 @@ class AgentStockUpdate extends RowAction
         $model->save();
         $stockafter = $model->stock_pack;
         if ($quantity != 0) {
-            $model->agentstock()->create([
+            $model->record()->create([
                 'stock_before' => $stockbefore,
                 'quantity' => $quantity,
                 'stock_after' => $stockafter,
                 'remarks' => 'Agent 更新库存'
             ]);
         }
+        return $this->response()->success('更新成功')->refresh();
     }
 
     public function form()

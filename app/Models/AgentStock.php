@@ -21,4 +21,9 @@ class AgentStock extends Model
     {
         return $this->belongsTo(Fruit::class);
     }
+
+    public function record()
+    {
+        return $this->hasMany(AgentStockRecord::class,'agentstock_id');
+    }
 }
