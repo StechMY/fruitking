@@ -30,6 +30,7 @@ class AgentStockRecordController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new AgentStockRecord());
+        $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
