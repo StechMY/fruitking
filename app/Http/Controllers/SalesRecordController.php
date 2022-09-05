@@ -166,7 +166,7 @@ class SalesRecordController extends Controller
             $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $fruit = Fruit::find($data['id']);
             if ($agentstock->status != 1) {
-                $error .= $fruit->name . ',';
+                $error .= $fruit->name . ' ';
             }
         }
         if ($error != '') {
