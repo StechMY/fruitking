@@ -20,6 +20,6 @@ class AgentStockRecord extends Model
 
     public function agentstock()
     {
-        return $this->belongsTo(agentstock::class, 'agentstock_id');
+        return $this->belongsTo(AgentStock::class, 'agentstock_id');
     }
 }

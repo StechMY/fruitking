@@ -35,12 +35,15 @@ class StockController extends AdminController
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
             $filter->equal('fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
-            $filter->equal('from_id', ' From')->select(Administrator::whereExists(function ($query) {
-                $query->select(DB::raw('role_id', 'user_id'))
-                    ->from('admin_role_users')
-                    ->where('admin_role_users.role_id', 2)
-                    ->whereColumn('admin_role_users.user_id', 'admin_users.id');
-            })->pluck('username', 'id'));
+            if (Admin::user()->isAdministrator()) {
+                $filter->equal('from_id', ' From')->select(Administrator::whereExists(function ($query) {
+                    $query->select(DB::raw('role_id', 'user_id'))
+                        ->from('admin_role_users')
+                        ->where('admin_role_users.role_id', 2)
+                        ->whereColumn('admin_role_users.user_id', 'admin_users.id');
+                })->pluck('username', 'id'));
+            }
+            
         });
         $grid->disableActions();
         $grid->batchActions(function ($batch) {

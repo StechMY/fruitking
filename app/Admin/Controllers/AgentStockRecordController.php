@@ -2,11 +2,16 @@
 
 namespace App\Admin\Controllers;
 
+use App\Models\AgentStock;
 use App\Models\AgentStockRecord;
+use App\Models\Fruit;
+use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
+use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Illuminate\Support\Facades\DB;
 
 class AgentStockRecordController extends AdminController
 {
@@ -25,9 +30,42 @@ class AgentStockRecordController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new AgentStockRecord());
-
+        $grid->filter(function ($filter) {
+            $filter->disableIdFilter();
+            $filter->between('created_at', 'Time')->datetime();
+            $filter->equal('agentstock.fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
+            if (Admin::user()->isAdministrator()) {
+                $filter->equal('agentstock.agent_id', ' Agent')->select(Administrator::whereExists(function ($query) {
+                    $query->select(DB::raw('role_id', 'user_id'))
+                        ->from('admin_role_users')
+                        ->where('admin_role_users.role_id', 2)
+                        ->whereColumn('admin_role_users.user_id', 'admin_users.id');
+                })->pluck('username', 'id'));
+            }
+            
+        });
         $grid->column('id', __('Id'));
-        $grid->column('agentstock_id', __('Agentstock id'));
+        $grid->column('agentstock_id', __('Agentstock'))->display(function ($data) {
+            $model = AgentStock::find($data);
+            $fruitid = $model->fruit_id;
+            $fruit = Fruit::find($fruitid);
+            $fruitname = $fruit->name;
+            $agentid = $model->agent_id;
+            $agent = Administrator::find($agentid);
+            $agentname = $agent->username;
+            return "<span style='color:blue'>$agentname:</span><span style='color:red'>$fruitname</span>";
+        
+        });
+        $grid->disableActions();
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
+        $grid->disableCreateButton();
+        if (!Admin::user()->isAdministrator()) {
+            $grid->model()->with(["agentstock" => function($q){
+                $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
+            }]);
+        }
         $grid->column('stock_before', __('Stock before'));
         $grid->column('quantity', __('Quantity'));
         $grid->column('stock_after', __('Stock after'));
@@ -44,37 +82,37 @@ class AgentStockRecordController extends AdminController
      * @param mixed $id
      * @return Show
      */
-    protected function detail($id)
-    {
-        $show = new Show(AgentStockRecord::findOrFail($id));
+    // protected function detail($id)
+    // {
+    //     $show = new Show(AgentStockRecord::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('agentstock_id', __('Agentstock id'));
-        $show->field('stock_before', __('Stock before'));
-        $show->field('quantity', __('Quantity'));
-        $show->field('stock_after', __('Stock after'));
-        $show->field('remarks', __('Remarks'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+    //     $show->field('id', __('Id'));
+    //     $show->field('agentstock_id', __('Agentstock id'));
+    //     $show->field('stock_before', __('Stock before'));
+    //     $show->field('quantity', __('Quantity'));
+    //     $show->field('stock_after', __('Stock after'));
+    //     $show->field('remarks', __('Remarks'));
+    //     $show->field('created_at', __('Created at'));
+    //     $show->field('updated_at', __('Updated at'));
 
-        return $show;
-    }
+    //     return $show;
+    // }
 
-    /**
-     * Make a form builder.
-     *
-     * @return Form
-     */
-    protected function form()
-    {
-        $form = new Form(new AgentStockRecord());
+    // /**
+    //  * Make a form builder.
+    //  *
+    //  * @return Form
+    //  */
+    // protected function form()
+    // {
+    //     $form = new Form(new AgentStockRecord());
 
-        $form->number('agentstock_id', __('Agentstock id'));
-        $form->number('stock_before', __('Stock before'));
-        $form->number('quantity', __('Quantity'));
-        $form->number('stock_after', __('Stock after'));
-        $form->text('remarks', __('Remarks'));
+    //     $form->number('agentstock_id', __('Agentstock id'));
+    //     $form->number('stock_before', __('Stock before'));
+    //     $form->number('quantity', __('Quantity'));
+    //     $form->number('stock_after', __('Stock after'));
+    //     $form->text('remarks', __('Remarks'));
 
-        return $form;
-    }
+    //     return $form;
+    // }
 }
