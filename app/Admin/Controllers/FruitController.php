@@ -96,7 +96,7 @@ class FruitController extends AdminController
         $form->hidden('ori_price', __('Ori price'))->default(0);
         $form->decimal('sales_price', __('Sales price'))->required();
         $form->decimal('commission_price', __('Commission price'))->required();
-        $form->image('image', __('Image'))->required();
+        $form->image('image', __('Image'));
         $form->number('stock', __('Stock'))->default('0')->required()->rules('gt:-1|numeric');
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'success'],
