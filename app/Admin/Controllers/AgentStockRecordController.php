@@ -61,9 +61,9 @@ class AgentStockRecordController extends AdminController
         });
         $grid->disableCreateButton();
         if (!Admin::user()->isAdministrator()) {
-            $grid->model()->whereHas(["agentstock" => function ($q) {
-                $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
-            }]);
+            $grid->model()->whereHas("agentstock", function ($q) {
+                return $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
+            });
         }
         $grid->column('stock_before', __('Stock before'));
         $grid->column('quantity', __('Quantity'));
