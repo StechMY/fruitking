@@ -43,7 +43,6 @@ class AgentStockRecordController extends AdminController
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
-            
         });
         $grid->column('id', __('Id'));
         $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
@@ -55,7 +54,6 @@ class AgentStockRecordController extends AdminController
             $agent = Administrator::find($agentid);
             $agentname = $agent->username;
             return "<span style='color:blue'>$agentname:</span><span style='color:red'>$fruitname</span>";
-        
         });
         $grid->disableActions();
         $grid->batchActions(function ($batch) {
@@ -63,7 +61,7 @@ class AgentStockRecordController extends AdminController
         });
         $grid->disableCreateButton();
         if (!Admin::user()->isAdministrator()) {
-            $grid->model()->with(["agentstock" => function($q){
+            $grid->model()->whereHas(["agentstock" => function ($q) {
                 $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
             }]);
         }
