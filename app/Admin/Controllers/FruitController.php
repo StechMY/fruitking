@@ -43,6 +43,17 @@ class FruitController extends AdminController
         });
         $grid->column('id', __('Id'));
         $grid->column('name', __('Name'));
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
+        $grid->actions(function ($actions) {
+
+            // 去掉删除
+            $actions->disableDelete();
+
+            // 去掉查看
+            $actions->disableView();
+        });
         // $grid->column('ori_price', __('Ori price'));
         $grid->column('sales_price', __('Sales price'));
         $grid->column('commission_price', __('Commission price'));
@@ -65,23 +76,23 @@ class FruitController extends AdminController
      * @param mixed $id
      * @return Show
      */
-    protected function detail($id)
-    {
-        $show = new Show(Fruit::findOrFail($id));
+    // protected function detail($id)
+    // {
+    //     $show = new Show(Fruit::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('name', __('Name'));
-        // $show->field('ori_price', __('Ori price'));
-        $show->field('sales_price', __('Sales price'));
-        $show->field('commission_price', __('Commission price'));
-        $show->field('image', __('Image'))->image();
-        $show->field('stock', __('Stock'));
-        $show->field('status', __('Status'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+    //     $show->field('id', __('Id'));
+    //     $show->field('name', __('Name'));
+    //     // $show->field('ori_price', __('Ori price'));
+    //     $show->field('sales_price', __('Sales price'));
+    //     $show->field('commission_price', __('Commission price'));
+    //     $show->field('image', __('Image'))->image();
+    //     $show->field('stock', __('Stock'));
+    //     $show->field('status', __('Status'));
+    //     $show->field('created_at', __('Created at'));
+    //     $show->field('updated_at', __('Updated at'));
 
-        return $show;
-    }
+    //     return $show;
+    // }
 
     /**
      * Make a form builder.
