@@ -36,7 +36,7 @@ class FruitController extends AdminController
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->like('name', __('Name'));
-            $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
+            $filter->equal('status', __('Status'))->select([0 => 'Off', 1 => 'On']);
         });
         $grid->column('id', __('Id'));
         $grid->column('name', __('Name'));
