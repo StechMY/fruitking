@@ -30,6 +30,18 @@ class AgentStockRecordController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new AgentStockRecord());
+        $grid->export(function ($export) {
+            $export->column('agentstock_id', function ($value, $original) {
+                $model = AgentStock::find($original);
+                $fruitid = $model->fruit_id;
+                $fruit = Fruit::find($fruitid);
+                $fruitname = $fruit->name;
+                $agentid = $model->agent_id;
+                $agent = Administrator::find($agentid);
+                $agentname = $agent->username;
+                return $agentname . ':' . $fruitname;
+            });
+        });
         $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
