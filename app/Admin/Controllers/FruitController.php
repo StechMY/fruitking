@@ -38,15 +38,13 @@ class FruitController extends AdminController
             $filter->like('name', __('Name'));
             $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
-        $grid->actions(function ($actions) {
-            $actions->add(new StockUpdate);
-        });
         $grid->column('id', __('Id'));
         $grid->column('name', __('Name'));
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
         });
         $grid->actions(function ($actions) {
+            $actions->add(new StockUpdate);
 
             // 去掉删除
             $actions->disableDelete();
