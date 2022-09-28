@@ -40,7 +40,7 @@ class UserController extends AdminController
             $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
         $grid->column('id', __('Id'));
-        if(Admin::user()->isAdministrator()){
+        if (Admin::user()->isAdministrator()) {
             $grid->column('agent.username', __('Agent'));
         }
         $grid->column('username', __('Username'));
@@ -90,11 +90,11 @@ class UserController extends AdminController
         $arr = request()->route()->parameters();
         if (request()->route()->getActionMethod() == 'edit') {
             $user = User::find($arr['user']);
-            if ($user){
+            if ($user) {
                 if (!Admin::user()->isAdministrator() && Admin::user()->id != $user->agent_id) {
                     abort(403, 'Illegal Access');
                 }
-            }else {
+            } else {
                 abort(404, 'User Not Found');
             }
         }
@@ -135,7 +135,7 @@ class UserController extends AdminController
             $model->username = $area->code . sprintf('%03d', $form->model()->id);
             $model->save();
         });
-        $form->switch('status', __('Status'))->default('1')->states($states)->required();
+        $form->switch('status', __('Status'))->states($states);
 
         return $form;
     }
