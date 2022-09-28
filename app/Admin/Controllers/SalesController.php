@@ -32,8 +32,8 @@ class SalesController extends AdminController
             $export->column('products', function ($value, $original) {
                 $message = '';
                 foreach ($original as $data) {
-                    $message .= 'name: ' . $data['fruitname'] . chr(9) . 'quantity: ' . $data['quantity'] . chr(9)
-                        . 'sales_price: ' . $data['sales_price'] . chr(9) . 'commission_price: ' . $data['commission_price'];
+                    $message .= 'name: ' . $data['fruitname'] . '  quantity: ' . $data['quantity']
+                        . '  sales_price: ' . $data['sales_price'] .  '  commission_price: ' . $data['commission_price'] . PHP_EOL;
                 }
                 return $message;
             });
