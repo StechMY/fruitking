@@ -32,6 +32,7 @@ class FruitController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Fruit());
+        $grid->disableExport();
         $grid->model()->orderBy('id', 'desc');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();

@@ -28,10 +28,11 @@ class AgentStockController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new AgentStock());
+        $grid->disableExport();
         $grid->model()->where('agent_id', Admin::user()->id);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
-            $filter->equal('fruit_id', __('Fruit'))->select(Fruit::where('status',1)->pluck('name','id'));
+            $filter->equal('fruit_id', __('Fruit'))->select(Fruit::where('status', 1)->pluck('name', 'id'));
             $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
         $grid->batchActions(function ($batch) {
@@ -41,7 +42,7 @@ class AgentStockController extends AdminController
 
             // 去掉删除
             $actions->disableDelete();
-        
+
             // 去掉查看
             $actions->disableView();
         });

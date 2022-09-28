@@ -30,7 +30,9 @@ class UserController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new User());
-
+        $grid->export(function ($export) {
+            $export->except(['status']);
+        });
         if (!Admin::user()->isAdministrator()) {
             $grid->model()->where('agent_id', Admin::user()->id);
         }

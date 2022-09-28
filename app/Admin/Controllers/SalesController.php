@@ -28,10 +28,20 @@ class SalesController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new SalesRecord());
+        $grid->export(function ($export) {
+            $export->column('products', function ($value, $original) {
+                $message = '';
+                foreach ($original as $data) {
+                    $message .= 'name: ' . $data['fruitname'] . chr(9) . 'quantity: ' . $data['quantity'] . chr(9)
+                        . 'sales_price: ' . $data['sales_price'] . chr(9) . 'commission_price: ' . $data['commission_price'];
+                }
+                return $message;
+            });
+        });
         $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
-            
+
             $filter->between('sales_records.created_at', 'Time')->datetime();
             if (Admin::user()->isAdministrator()) {
                 $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
