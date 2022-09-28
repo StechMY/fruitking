@@ -98,7 +98,9 @@ class UserController extends AdminController
                 abort(404, 'User Not Found');
             }
         }
-        $form->select('area_id', __('Area id'))->options(AreaCode::pluck('name', 'id'))->required();
+        if (!$form->isEditing()) {
+            $form->select('area_id', __('Area id'))->options(AreaCode::pluck('name', 'id'))->required();
+        }
         if (!Admin::user()->isAdministrator()) {
             $form->hidden('agent_id')->value(Admin::user()->id);
         } else {

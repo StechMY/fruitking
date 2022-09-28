@@ -164,7 +164,7 @@ class HomeController extends Controller
                                 <line y1="1" x2="16" y2="1" stroke="#0064FE" stroke-width="2" class="icon" />
                               </svg>
                             </button>
-                            <input type="number" class="number dim" id="' . $data->id . '" value="0" style="width:5em">
+                            <input type="number" class="number dim" id="' . $data->id . '" min="0" value="0" style="width:5em">
                             <button class="button-custom plus" aria-label="Increase by one">
                               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                                 <line x1="8" y1="4.37114e-08" x2="8" y2="16" stroke="#0064FE" stroke-width="2" />
