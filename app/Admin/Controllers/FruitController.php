@@ -100,7 +100,18 @@ class FruitController extends AdminController
     protected function form()
     {
         $form = new Form(new Fruit());
+        $form->tools(function (Form\Tools $tools) {
+            // 去掉`删除`按钮
+            $tools->disableDelete();
 
+            // 去掉`查看`按钮
+            $tools->disableView();
+        });
+        $form->footer(function ($footer) {
+
+            // 去掉`查看`checkbox
+            $footer->disableViewCheck();
+        });
         $form->text('name', __('Name'))->required();
         $form->hidden('ori_price', __('Ori price'))->default(0);
         $form->decimal('sales_price', __('Sales price'))->required();
