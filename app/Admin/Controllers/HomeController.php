@@ -222,6 +222,11 @@ class HomeController extends Controller
                           });
                           },
                           error: function (data) {
+                            Swal.fire(
+                              "出錯!",
+                              "請嘗試刷新頁面.",
+                              "error"
+                            );
                               console.log(data);
                           }
                       });
