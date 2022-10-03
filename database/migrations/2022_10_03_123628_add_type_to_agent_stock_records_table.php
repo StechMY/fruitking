@@ -15,7 +15,6 @@ class AddTypeToAgentStockRecordsTable extends Migration
     {
         Schema::table('agent_stock_records', function (Blueprint $table) {
             $table->string('type');
-            $table->string('remarks');
         });
     }
 
@@ -28,7 +27,6 @@ class AddTypeToAgentStockRecordsTable extends Migration
     {
         Schema::table('agent_stock_records', function (Blueprint $table) {
             $table->dropColumn('type');
-            $table->dropColumn('remarks');
         });
     }
 }
