@@ -145,6 +145,7 @@ class FruitController extends AdminController
                         'stock_before' => $stockbefore,
                         'quantity' => $form->model()->stock - $stockbefore,
                         'stock_after' => $form->model()->stock,
+                        'type' => 0,
                         'remarks' => 'Admin 更新库存'
                     ]);
                 }
