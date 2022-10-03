@@ -235,6 +235,8 @@ class HomeController extends Controller
                             data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . ',type:selectoption},
                             dataType: "json",
                             success: function (data) {
+                              console.log(data);
+
                               Swal.fire(
                                 "成功!",
                                 "此動作已被記錄.",

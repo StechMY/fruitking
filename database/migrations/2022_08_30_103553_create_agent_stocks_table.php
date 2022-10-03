@@ -19,7 +19,7 @@ class CreateAgentStocksTable extends Migration
             $table->unsignedBigInteger('fruit_id');
             $table->foreign('fruit_id')->references('id')->on('fruits');
             $table->integer('stock_pack');
-            $table->char('status',1)->default(0);
+            $table->char('status', 1)->default(1);
             $table->timestamps();
         });
     }

@@ -161,6 +161,14 @@ class FruitController extends AdminController
         foreach ($request->data as $data) {
             if ($data['number'] > 0) {
                 $fruit = Fruit::find($data['id']);
+                if ($fruit->stock < $data['number']) {
+                    return response()->json($fruit . '公司庫存不足', 201);
+                }
+            }
+        }
+        foreach ($request->data as $data) {
+            if ($data['number'] > 0) {
+                $fruit = Fruit::find($data['id']);
                 $stok_before = $fruit->stock;
                 $fruit->stock -= $data['number'];
                 $fruit->save();
