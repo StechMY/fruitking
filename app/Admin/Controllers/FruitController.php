@@ -165,9 +165,9 @@ class FruitController extends AdminController
                 $fruit->save();
                 $stok_after = $fruit->stock;
                 if ($request->type == 1) {
-                    $message = ' 自買 員工價';
-                } else {
                     $message = ' 取货';
+                } else {
+                    $message = ' 自買 員工價';
                 }
                 StockRecord::create([
                     'fruit_id' => $data['id'],
