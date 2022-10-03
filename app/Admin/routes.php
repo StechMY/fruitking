@@ -17,7 +17,7 @@ Route::group([
     $router->resource('sales-records', SalesController::class);
     $router->resource('stock-records', StockController::class);
     $router->resource('area-codes', AreaController::class);
-    $router->resource('agent-stocks', AgentStockController::class);
-    $router->resource('agent-stock-records', AgentStockRecordController::class);
+    // $router->resource('agent-stocks', AgentStockController::class);
+    // $router->resource('agent-stock-records', AgentStockRecordController::class);
     // $router->resource('agent-profiles', AgentController::class);
 });

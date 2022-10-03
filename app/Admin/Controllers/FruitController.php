@@ -53,7 +53,7 @@ class FruitController extends AdminController
             // 去掉查看
             $actions->disableView();
         });
-        // $grid->column('ori_price', __('Ori price'));
+        $grid->column('ori_price', __('Ori price'));
         $grid->column('sales_price', __('Sales price'));
         $grid->column('commission_price', __('Commission price'));
         $grid->column('image', __('Image'))->image();
@@ -114,7 +114,7 @@ class FruitController extends AdminController
             $footer->disableViewCheck();
         });
         $form->text('name', __('Name'))->required();
-        $form->hidden('ori_price', __('Ori price'))->default(0);
+        $form->decimal('ori_price', __('Ori price'))->required();
         $form->decimal('sales_price', __('Sales price'))->required();
         $form->decimal('commission_price', __('Commission price'))->required();
         $form->image('image', __('Image'))->removable();
@@ -171,17 +171,21 @@ class FruitController extends AdminController
                     'stock_before' =>  $stok_before,
                     'quantity' =>  -$data['number'],
                     'stock_after' =>  $stok_after,
+                    'type' => $request->type,
                     'remarks' => $agent->username . ' 取货',
                 ]);
-                AgentStock::firstOrCreate(
-                    [
-                        'agent_id' => Admin::user()->id,
-                        'fruit_id' => $data['id']
-                    ],
-                    [
-                        'stock_pack' => 0,
-                    ]
-                );
+                $agentstock = AgentStock::where('agent_id', Admin::user()->id)->where('fruit_id', $data['id'])->first();
+                if ($agentstock) {
+                    $agentstock->stock_pack += $data['number'];
+                } else {
+                    AgentStock::create(
+                        [
+                            'agent_id' => Admin::user()->id,
+                            'fruit_id' => $data['id'],
+                            'stock_pack' => $data['number'],
+                        ]
+                    );
+                }
             }
         }
         return response()->json('Ok');

@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class StockRecord extends Model
 {
-    use HasFactory,DefaultDatetimeFormat;
+    use HasFactory, DefaultDatetimeFormat;
 
     protected $fillable = [
         'from_id',
         'fruit_id',
         'stock_before',
         'quantity',
+        'type',
         'stock_after',
         'remarks',
     ];

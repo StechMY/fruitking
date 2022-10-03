@@ -190,48 +190,71 @@ class HomeController extends Controller
                             number: div.value
                         });
                     });
-                    Swal.fire({
-                      title: "確定執行？",
-                      text: "請確認資料無誤",
-                      type: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#3085d6",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText: "確定",
-                      cancelButtonText: "取消"
-                    }).then((result) => {
-                      if (result.value) {
-                        $.ajaxSetup({
-                          headers: {
-                              "X-CSRF-TOKEN": $("meta[name=' . "csrf-token" . ']").attr("content")
-                          }
-                      });
-                      $.ajax({
-                          type: "POST",
-                          url: "/admin/takefruit",
-                          data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . '},
-                          dataType: "json",
-                          success: function (data) {
-                            Swal.fire(
-                              "成功!",
-                              "此動作已被記錄.",
-                              "success"
-                            );
-                            numbers.forEach((div) => {
-                              div.value = 0;
-                          });
-                          },
-                          error: function (data) {
-                            Swal.fire(
-                              "出錯!",
-                              "請嘗試刷新頁面.",
-                              "error"
-                            );
-                              console.log(data);
-                          }
-                      });
+
+                    const inputOptions = new Promise((resolve) => {
+                      setTimeout(() => {
+                        resolve({
+                          "ori_price": "員工價",
+                          "sales_price": "售價",
+                        })
+                      }, 1000)
+                    })
+                    
+                    const { value: selectoption } = await Swal.fire({
+                      title: "請選擇此操作類型",
+                      input: "radio",
+                      inputOptions: inputOptions,
+                      inputValidator: (value) => {
+                        if (!value) {
+                          return "請選擇其中一個!"
+                        }
                       }
                     })
+                    
+                    if (selectoption) {
+                      Swal.fire({
+                        title: "確定執行？",
+                        text: "請確認資料無誤",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "確定",
+                        cancelButtonText: "取消"
+                      }).then((result) => {
+                        if (result.value) {
+                          $.ajaxSetup({
+                            headers: {
+                                "X-CSRF-TOKEN": $("meta[name=' . "csrf-token" . ']").attr("content")
+                            }
+                        });
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/takefruit",
+                            data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . ',type:selectoption},
+                            dataType: "json",
+                            success: function (data) {
+                              Swal.fire(
+                                "成功!",
+                                "此動作已被記錄.",
+                                "success"
+                              );
+                              numbers.forEach((div) => {
+                                div.value = 0;
+                            });
+                            },
+                            error: function (data) {
+                              Swal.fire(
+                                "出錯!",
+                                "請嘗試刷新頁面.",
+                                "error"
+                              );
+                                console.log(data);
+                            }
+                        });
+                        }
+                      })
+                    }
                 }</script>');
         });
     }
