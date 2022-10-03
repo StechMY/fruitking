@@ -182,18 +182,22 @@ class SalesRecordController extends Controller
         foreach ($request->products as $data) {
             $fruit = Fruit::find($data['id']);
             $sales_price = $fruit->sales_price;
+            $ori_price = $fruit->ori_price;
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
             $fruitdata = [
                 'fruitname' => $fruitname,
-                'sales_price' => $sales_price,
-                'commission_price' => $commission_price,
+                'sales_price' => $request->type == 1 ? $sales_price : $ori_price,
+                'commission_price' => $request->type == 1 ? $commission_price : 0,
                 'quantity' => $data['qty']
             ];
-            $totalcommission += $commission_price * $data['qty'];
-            $totalsales += $sales_price * $data['qty'];
+            $totalcommission += $request->type == 1 ? $commission_price * $data['qty'] : 0;
+            if ($request->type == 1) {
+                $totalsales += $sales_price * $data['qty'];
+            } else {
+                $totalsales += $ori_price * $data['qty'];
+            }
             $newdata->push($fruitdata);
-
             $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $agentstockbefore = $agentstock->stock_pack;
             $agentstock->stock_pack -= $data['qty'];
@@ -202,12 +206,18 @@ class SalesRecordController extends Controller
             //     $agentstock->status = 0;
             //     $agentstock->save();
             // }
+            if ($request->type == 1) {
+                $remark = $this->user->username . '賣出';
+            } else {
+                $remark = $this->user->username . ' ' . $request->remarks;
+            }
             $agentstockafter = $agentstock->stock_pack;
             $agentstock->record()->create([
                 'stock_before' => $agentstockbefore,
                 'quantity' => - ($data['qty']),
                 'stock_after' => $agentstockafter,
-                'remarks' => $this->user->username . '賣出'
+                'type' => $request->type,
+                'remarks' => $remark
             ]);
         }
 
@@ -216,7 +226,8 @@ class SalesRecordController extends Controller
             'user_id' => $this->user->id,
             'products' => $newdata,
             'total_sales' => $totalsales,
-            'total_commission' => $totalcommission
+            'total_commission' => $totalcommission,
+            'remarks' => $remark
         ]);
 
         //Product created, return success response

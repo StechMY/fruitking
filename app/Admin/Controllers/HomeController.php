@@ -194,8 +194,8 @@ class HomeController extends Controller
                     const inputOptions = new Promise((resolve) => {
                       setTimeout(() => {
                         resolve({
-                          "ori_price": "員工價",
-                          "sales_price": "售價",
+                          "1": "售價",
+                          "2": "員工價",
                         })
                       }, 1000)
                     })
