@@ -43,7 +43,6 @@ class StockController extends AdminController
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
-            
         });
         $grid->disableActions();
         $grid->batchActions(function ($batch) {
@@ -63,7 +62,8 @@ class StockController extends AdminController
         if (Admin::user()->isAdministrator()) {
             $grid->column('stock_after', __('Stock after'));
         }
-        $grid->column('remarks', __('Remarks'))->filter('like');;
+        $grid->column('type', __('Type'));
+        $grid->column('remarks', __('Remarks'))->filter('like');
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
 
