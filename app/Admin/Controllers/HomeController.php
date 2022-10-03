@@ -216,7 +216,7 @@ class HomeController extends Controller
                       Swal.fire({
                         title: "確定執行？",
                         text: "請確認資料無誤",
-                        type: "warning",
+                        icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
