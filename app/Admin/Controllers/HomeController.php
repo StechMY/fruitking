@@ -201,7 +201,7 @@ class HomeController extends Controller
                     })
                     
                     const { value: selectoption } = await Swal.fire({
-                      icon: "question",
+                      type: "question",
                       title: "請選擇此操作類型",
                       input: "radio",
                       inputOptions: inputOptions,
