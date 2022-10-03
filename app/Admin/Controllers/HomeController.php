@@ -200,7 +200,7 @@ class HomeController extends Controller
                       }, 1000)
                     })
                     
-                    const { value: selectoption } = await Swal.fire({
+                    const { value: selectoption } = await swal.fire({
                       type: "question",
                       title: "請選擇此操作類型",
                       input: "radio",
@@ -213,10 +213,10 @@ class HomeController extends Controller
                     })
                     
                     if (selectoption) {
-                      Swal.fire({
+                      swal.fire({
                         title: "確定執行？",
                         text: "請確認資料無誤",
-                        icon: "warning",
+                        type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
