@@ -181,7 +181,7 @@ class HomeController extends Controller
             $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="async submitStock()">提交</button></div>');
           });
           Admin::html('<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>function submitStock(){
+                <script>async function submitStock(){
                     const numbers = document.querySelectorAll(".number");
                     var fruitarray = [];
                     numbers.forEach((div) => {
