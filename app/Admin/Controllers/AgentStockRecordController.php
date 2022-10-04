@@ -81,6 +81,7 @@ class AgentStockRecordController extends AdminController
         $grid->column('quantity', __('Quantity'));
         $grid->column('stock_after', __('Stock after'));
         $grid->column('remarks', __('Remarks'))->filter('like');;
+        $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
 
