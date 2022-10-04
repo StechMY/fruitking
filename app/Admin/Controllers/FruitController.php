@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Actions\Fruits\StockUpdate;
 use App\Models\AgentStock;
+use App\Models\AgentStockRecord;
 use App\Models\Fruit;
 use App\Models\StockRecord;
 use Encore\Admin\Auth\Database\Administrator;
@@ -190,16 +191,30 @@ class FruitController extends AdminController
                 ]);
                 $agentstock = AgentStock::where('agent_id', Admin::user()->id)->where('fruit_id', $data['id'])->first();
                 if ($agentstock) {
+                    $stockbefore = $agentstock->stock_pack;
                     $agentstock->stock_pack += $data['number'];
+                    $agentstock->save();
+                    $stockafter = $agentstock->stock_pack;
                 } else {
-                    AgentStock::create(
+                    $stockbefore = 0;
+                    $agentstock = AgentStock::create(
                         [
                             'agent_id' => Admin::user()->id,
                             'fruit_id' => $data['id'],
                             'stock_pack' => $data['number'],
                         ]
                     );
+                    $stockafter = $agentstock->stock_pack;
                 }
+
+                AgentStockRecord::create([
+                    'agentstock_id' => $agentstock->id,
+                    'stock_before' => $stockbefore,
+                    'quantity' => $data['number'],
+                    'stock_after' => $stockafter,
+                    'remarks' => '從公司拿貨',
+                    'type' => 0,
+                ]);
             }
         }
         return response()->json('Ok');
