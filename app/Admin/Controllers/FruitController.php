@@ -213,7 +213,7 @@ class FruitController extends AdminController
                     'quantity' => $data['number'],
                     'stock_after' => $stockafter,
                     'remarks' => '從公司拿貨',
-                    'type' => 0,
+                    'type' => $request->type,
                 ]);
             }
         }
