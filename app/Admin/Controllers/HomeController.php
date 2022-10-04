@@ -235,15 +235,21 @@ class HomeController extends Controller
                             data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . ',type:selectoption},
                             dataType: "json",
                             success: function (data) {
-                              console.log(data);
-
-                              Swal.fire(
-                                "成功!",
-                                "此動作已被記錄.",
-                                "success"
-                              );
-                              numbers.forEach((div) => {
-                                div.value = 0;
+                              if (data.success == false){
+                                Swal.fire(
+                                  "失敗!",
+                                  data.error,
+                                  "success"
+                                );
+                              }else {
+                                Swal.fire(
+                                  "成功!",
+                                  "此動作已被記錄.",
+                                  "success"
+                                );
+                                numbers.forEach((div) => {
+                                  div.value = 0;
+                              }
                             });
                             },
                             error: function (data) {
