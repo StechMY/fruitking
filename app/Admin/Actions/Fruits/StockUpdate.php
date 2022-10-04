@@ -24,6 +24,7 @@ class StockUpdate extends RowAction
                 'stock_before' => $stockbefore,
                 'quantity' => $quantity,
                 'stock_after' => $stockafter,
+                'type' => 0,
                 'remarks' => 'Admin 更新库存'
             ]);
         }
