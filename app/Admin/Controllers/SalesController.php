@@ -43,7 +43,7 @@ class SalesController extends AdminController
             $filter->disableIdFilter();
 
             $filter->between('sales_records.created_at', 'Time')->datetime();
-            if (Admin::user()->isAdministrator()) {
+            if (Admin::user()->inRoles(['administrator', 'company'])) {
                 $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
                 $filter->where(function ($query) {
                     $query->whereHas('user', function ($query) {
@@ -59,7 +59,7 @@ class SalesController extends AdminController
             $batch->disableDelete();
         });
         $grid->disableCreateButton();
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->model()->select('sales_records.*')->join('users', 'sales_records.user_id', '=', 'users.id')->where('users.agent_id', Admin::user()->id)->orderBy('sales_records.id', 'DESC');
         }
         $grid->column('id', __('Id'));
@@ -107,12 +107,12 @@ class SalesController extends AdminController
                 ->when(request('user_id') != null, function ($q) {
                     return $q->where('user_id', request('user_id'));
                 })
-                ->when($lastkey != '_pjax' && request($lastkey) != null && Admin::user()->isAdministrator(), function ($q) use ($lastkey) {
+                ->when($lastkey != '_pjax' && request($lastkey) != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) use ($lastkey) {
                     return $q->whereHas('user', function ($query) use ($lastkey) {
                         $query->where('agent_id', request($lastkey));
                     });
                 })
-                ->when(!Admin::user()->isAdministrator(), function ($q) {
+                ->when(!Admin::user()->inRoles(['administrator', 'company']), function ($q) {
                     return $q->whereHas('user', function ($query) {
                         $query->where('agent_id', Admin::user()->id);
                     });
@@ -132,12 +132,12 @@ class SalesController extends AdminController
                 ->when(request('user_id') != null, function ($q) {
                     return $q->where('user_id', request('user_id'));
                 })
-                ->when($lastkey != '_pjax' && request($lastkey) != null && Admin::user()->isAdministrator(), function ($q) use ($lastkey) {
+                ->when($lastkey != '_pjax' && request($lastkey) != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) use ($lastkey) {
                     return $q->whereHas('user', function ($query) use ($lastkey) {
                         $query->where('agent_id', request($lastkey));
                     });
                 })
-                ->when(!Admin::user()->isAdministrator(), function ($q) {
+                ->when(!Admin::user()->inRoles(['administrator', 'company']), function ($q) {
                     return $q->whereHas('user', function ($query) {
                         $query->where('agent_id', Admin::user()->id);
                     });

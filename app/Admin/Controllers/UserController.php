@@ -33,7 +33,7 @@ class UserController extends AdminController
         $grid->export(function ($export) {
             $export->except(['status']);
         });
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->model()->where('agent_id', Admin::user()->id);
         }
         $grid->filter(function ($filter) {
@@ -42,7 +42,7 @@ class UserController extends AdminController
             $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
         $grid->column('id', __('Id'));
-        if (Admin::user()->isAdministrator()) {
+        if (Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->column('agent.username', __('Agent'));
         }
         $grid->column('username', __('Username'));
@@ -93,7 +93,7 @@ class UserController extends AdminController
         if (request()->route()->getActionMethod() == 'edit') {
             $user = User::find($arr['user']);
             if ($user) {
-                if (!Admin::user()->isAdministrator() && Admin::user()->id != $user->agent_id) {
+                if (!Admin::user()->inRoles(['administrator', 'company']) && Admin::user()->id != $user->agent_id) {
                     abort(403, 'Illegal Access');
                 }
             } else {
@@ -103,7 +103,7 @@ class UserController extends AdminController
         if (!$form->isEditing()) {
             $form->select('area_id', __('Area id'))->options(AreaCode::pluck('name', 'id'))->required();
         }
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $form->hidden('agent_id')->value(Admin::user()->id);
         } else {
             $form->select('agent_id', __('Agent id'))->options(Administrator::whereExists(function ($query) {

@@ -47,7 +47,7 @@ class AgentStockRecordController extends AdminController
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
             $filter->equal('agentstock.fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
-            if (Admin::user()->isAdministrator()) {
+            if (Admin::user()->inRoles(['administrator', 'company'])) {
                 $filter->equal('agentstock.agent_id', ' Agent')->select(Administrator::whereExists(function ($query) {
                     $query->select(DB::raw('role_id', 'user_id'))
                         ->from('admin_role_users')
@@ -72,7 +72,7 @@ class AgentStockRecordController extends AdminController
             $batch->disableDelete();
         });
         $grid->disableCreateButton();
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->model()->whereHas("agentstock", function ($q) {
                 return $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
             });

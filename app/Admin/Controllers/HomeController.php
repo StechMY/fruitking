@@ -15,7 +15,7 @@ class HomeController extends Controller
 {
   public function index(Content $content)
   {
-    if (FacadesAdmin::user()->isAdministrator()) {
+    if (FacadesAdmin::user()->inRoles(['administrator', 'company'])) {
       return redirect('/admin/fruits');
     } else {
       Admin::script('const buttons = document.querySelectorAll(".button-custom");

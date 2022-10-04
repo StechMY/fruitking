@@ -35,7 +35,7 @@ class StockController extends AdminController
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
             $filter->equal('fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
-            if (Admin::user()->isAdministrator()) {
+            if (Admin::user()->inRoles(['administrator', 'company'])) {
                 $filter->equal('from_id', ' From')->select(Administrator::whereExists(function ($query) {
                     $query->select(DB::raw('role_id', 'user_id'))
                         ->from('admin_role_users')
@@ -49,17 +49,17 @@ class StockController extends AdminController
             $batch->disableDelete();
         });
         $grid->disableCreateButton();
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->model()->where('from_id', Admin::user()->id);
         }
         $grid->column('id', __('Id'));
         $grid->column('from.username', __('From'));
         $grid->column('fruit.name', __('Fruit'));
-        if (Admin::user()->isAdministrator()) {
+        if (Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->column('stock_before', __('Stock before'));
         }
         $grid->column('quantity', __('Quantity'));
-        if (Admin::user()->isAdministrator()) {
+        if (Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->column('stock_after', __('Stock after'));
         }
         $grid->column('type', __('Type'));

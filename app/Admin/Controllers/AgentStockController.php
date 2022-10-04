@@ -29,7 +29,7 @@ class AgentStockController extends AdminController
     {
         $grid = new Grid(new AgentStock());
         $grid->disableExport();
-        if (!Admin::user()->isAdministrator()) {
+        if (!Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->model()->where('agent_id', Admin::user()->id);
         }
         $grid->filter(function ($filter) {

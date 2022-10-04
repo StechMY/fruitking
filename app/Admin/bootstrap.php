@@ -29,9 +29,8 @@ $message = '';
 foreach ($stockless as $data) {
     $message .= $data->name . " 需要及時補貨 所剩: " . $data->stock . '<br>';
 }
-if (Auth::check()){
-    if ($stockless->count() > 0 && Admin::user()->isAdministrator()) {
+if (Auth::check()) {
+    if ($stockless->count() > 0 && Admin::user()->inRoles(['administrator', 'company'])) {
         admin_warning('倉庫數量不足', $message);
     }
 }
-
