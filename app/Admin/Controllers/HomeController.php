@@ -239,7 +239,7 @@ class HomeController extends Controller
                                 Swal.fire(
                                   "失敗!",
                                   data.error,
-                                  "success"
+                                  "error"
                                 );
                               }else {
                                 Swal.fire(
