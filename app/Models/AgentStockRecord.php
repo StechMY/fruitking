@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class AgentStockRecord extends Model
 {
-    use HasFactory,DefaultDatetimeFormat;
+    use HasFactory, DefaultDatetimeFormat;
 
     protected $fillable = [
         'agentstock_id',
         'stock_before',
         'quantity',
         'stock_after',
-        'remarks'
+        'remarks', 'type'
     ];
 
     public function agentstock()
