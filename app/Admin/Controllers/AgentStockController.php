@@ -51,6 +51,9 @@ class AgentStockController extends AdminController
         // });
         $grid->disableCreateButton();
         $grid->column('id', __('Id'));
+        if (Admin::user()->inRoles(['administrator', 'company'])) {
+            $grid->column('agent.username', __('Agent'));
+        }
         $grid->column('fruit.name', __('Fruit'));
         $grid->column('stock_pack', __('Stock pack'));
 
