@@ -233,7 +233,6 @@ class HomeController extends Controller
                             type: "POST",
                             url: "/admin/takefruit",
                             data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . ',type:selectoption},
-                            dataType: "json",
                             success: function (data) {
                               console.log(data.status);
 
