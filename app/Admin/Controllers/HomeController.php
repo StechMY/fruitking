@@ -249,8 +249,8 @@ class HomeController extends Controller
                                 );
                                 numbers.forEach((div) => {
                                   div.value = 0;
+                                });
                               }
-                            });
                             },
                             error: function (data) {
                               Swal.fire(
