@@ -90,6 +90,7 @@ class EmployeeBuyController extends AdminController
                     })->sum('quantity');
                 $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
             }
+            return $htmltext;
         });
         return $grid;
     }
