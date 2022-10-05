@@ -13,7 +13,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Illuminate\Support\Facades\DB;
 
-class AgentStockRecordController extends AdminController
+class AgentEmployeeBuyController extends AdminController
 {
     /**
      * Title for current resource.
@@ -30,6 +30,7 @@ class AgentStockRecordController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new AgentStockRecord());
+
         $grid->export(function ($export) {
             $export->column('agentstock_id', function ($value, $original) {
                 $model = AgentStock::find($original);
@@ -42,7 +43,7 @@ class AgentStockRecordController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->where('type', 1);
+        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [2, 3, 4]);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -84,6 +85,8 @@ class AgentStockRecordController extends AdminController
         $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+
+        return $grid;
 
         return $grid;
     }
