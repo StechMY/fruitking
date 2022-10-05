@@ -70,7 +70,7 @@ class EmployeeBuyController extends AdminController
             $fruits = Fruit::all();
             $htmltext = '';
             foreach ($fruits as $data) {
-                $quantity = StockRecord::whereIn('type', 2)->where('fruit_id', $data->id)
+                $quantity = StockRecord::where('type', 2)->where('fruit_id', $data->id)
                     ->when(request('created_at') != null, function ($q) {
                         return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
                             return $q->where('created_at', '>', request('created_at')['start']);
