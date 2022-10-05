@@ -66,7 +66,32 @@ class StockController extends AdminController
         $grid->column('remarks', __('Remarks'))->filter('like');
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->header(function ($query) {
+            $fruits = Fruit::all();
+            $htmltext = '';
+            foreach ($fruits as $data) {
+                $quantity = StockRecord::whereIn('type', [0, 1])->where('fruit_id', $data->id)
+                    ->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                        return $q->where('created_at', '>', request('created_at')['start']);
+                    })
+                    ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                        return $q->where('created_at', '<', request('created_at')['end']);
+                    })
+                    ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                        return $q->whereBetween('created_at', request('created_at'));
+                    })
+                    // ->when(request('fruit_id') != null, function ($q) {
+                    //     return $q->where('fruit_id', request('fruit_id'));
+                    // })
+                    ->when(request('from_id') != null, function ($q) {
+                        return $q->where('from_id', request('from_id'));
+                    })->sum('quantity');
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
+            }
 
+
+            return $htmltext;
+        });
         return $grid;
     }
 
