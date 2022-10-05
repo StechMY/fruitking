@@ -175,8 +175,10 @@ class FruitController extends AdminController
                 $fruit->save();
                 $stok_after = $fruit->stock;
                 if ($request->type == 1) {
+                    $quantitytake = $data['number'];
                     $message = ' 取货';
                 } else {
+                    $quantitytake = 0;
                     $message = ' 自買 員工價';
                 }
                 StockRecord::create([
@@ -192,7 +194,7 @@ class FruitController extends AdminController
                 $agentstock = AgentStock::where('agent_id', Admin::user()->id)->where('fruit_id', $data['id'])->first();
                 if ($agentstock) {
                     $stockbefore = $agentstock->stock_pack;
-                    $agentstock->stock_pack += $data['number'];
+                    $agentstock->stock_pack += $quantitytake;
                     $agentstock->save();
                     $stockafter = $agentstock->stock_pack;
                 } else {
@@ -201,7 +203,7 @@ class FruitController extends AdminController
                         [
                             'agent_id' => Admin::user()->id,
                             'fruit_id' => $data['id'],
-                            'stock_pack' => $data['number'],
+                            'stock_pack' => $quantitytake,
                         ]
                     );
                     $stockafter = $agentstock->stock_pack;
@@ -212,7 +214,7 @@ class FruitController extends AdminController
                     'stock_before' => $stockbefore,
                     'quantity' => $data['number'],
                     'stock_after' => $stockafter,
-                    'remarks' => '從公司拿貨',
+                    'remarks' => '從公司拿貨' . $message,
                     'type' => $request->type,
                 ]);
             }

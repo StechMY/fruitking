@@ -10,10 +10,9 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
-use Encore\Admin\Widgets\Table;
 use Illuminate\Support\Facades\DB;
 
-class StockController extends AdminController
+class EmployeeBuyController extends AdminController
 {
     /**
      * Title for current resource.
@@ -30,7 +29,8 @@ class StockController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new StockRecord());
-        $grid->model()->whereIn('type', [0, 1])->orderBy('id', 'DESC');
+
+        $grid->model()->where('type', 2)->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -81,8 +81,8 @@ class StockController extends AdminController
     //     $show = new Show(StockRecord::findOrFail($id));
 
     //     $show->field('id', __('Id'));
-    //     $show->field('from_id', __('Fruit id'));
     //     $show->field('fruit_id', __('Fruit id'));
+    //     $show->field('from_id', __('From id'));
     //     $show->field('stock_before', __('Stock before'));
     //     $show->field('quantity', __('Quantity'));
     //     $show->field('stock_after', __('Stock after'));
@@ -103,6 +103,7 @@ class StockController extends AdminController
     //     $form = new Form(new StockRecord());
 
     //     $form->number('fruit_id', __('Fruit id'));
+    //     $form->number('from_id', __('From id'));
     //     $form->number('stock_before', __('Stock before'));
     //     $form->number('quantity', __('Quantity'));
     //     $form->number('stock_after', __('Stock after'));
