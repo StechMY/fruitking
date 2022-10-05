@@ -71,14 +71,16 @@ class StockController extends AdminController
             $htmltext = '';
             foreach ($fruits as $data) {
                 $quantity = StockRecord::whereIn('type', [0, 1])->where('fruit_id', $data->id)
-                    ->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
-                        return $q->where('created_at', '>', request('created_at')['start']);
-                    })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
-                        return $q->where('created_at', '<', request('created_at')['end']);
-                    })
-                    ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
-                        return $q->whereBetween('created_at', request('created_at'));
+                    ->when(request('created_at') != null, function ($q) {
+                        return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                            return $q->where('created_at', '>', request('created_at')['start']);
+                        })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                                return $q->where('created_at', '<', request('created_at')['end']);
+                            })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                                return $q->whereBetween('created_at', request('created_at'));
+                            });
                     })
                     // ->when(request('fruit_id') != null, function ($q) {
                     //     return $q->where('fruit_id', request('fruit_id'));
