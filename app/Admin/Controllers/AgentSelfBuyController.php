@@ -13,7 +13,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Illuminate\Support\Facades\DB;
 
-class AgentEmployeeBuyController extends AdminController
+class AgentSelfBuyController extends AdminController
 {
     /**
      * Title for current resource.
@@ -43,7 +43,7 @@ class AgentEmployeeBuyController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [3, 4]);
+        $grid->model()->orderBy('id', 'DESC')->where('type', 2);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -85,8 +85,6 @@ class AgentEmployeeBuyController extends AdminController
         $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
-
-        return $grid;
 
         return $grid;
     }
