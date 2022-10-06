@@ -85,7 +85,7 @@ class AgentStockRecordController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
-            dd(request()->all());
+            // dd(request()->all());
             $fruits = Fruit::all();
             $htmltext = '';
             foreach ($fruits as $data) {
@@ -108,9 +108,11 @@ class AgentStockRecordController extends AdminController
                     // ->when(request('fruit_id') != null, function ($q) {
                     //     return $q->where('fruit_id', request('fruit_id'));
                     // })
-                    ->when(request('from_id') != null, function ($q) {
-                        return $q->where('from_id', request('from_id'));
-                    })->sum('quantity');
+                    ->when(request('agentstock') != null, function ($q) {
+                        return $q->when(request('agentstock')['agent_id'] != null, function ($q) {
+                            return $q->where('agent_id', request('agentstock')['agent_id']);
+                        });
+                    });
                 $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
             }
 
