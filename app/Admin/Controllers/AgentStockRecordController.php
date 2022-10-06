@@ -96,11 +96,11 @@ class AgentStockRecordController extends AdminController
             })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
-                $quantity = AgentStockRecord::whereIn('type', [1, 3])->whereHas(["agentstock" => function ($q) use ($data) {
+                $quantity = AgentStockRecord::whereIn('type', [1, 3])->whereHas("agentstock", function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
                         $q->where('fruit.id', '=', $data->id);
                     });
-                }])
+                })
                     ->when(request('created_at') != null, function ($q) {
                         return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
                             return $q->where('created_at', '>', request('created_at')['start']);
