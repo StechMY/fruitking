@@ -133,7 +133,7 @@ class ApiController extends Controller
         }
         $user = auth()->user();
         $agent = $user->agent->id;
-        $fruits = AgentStock::with('fruit:id,name,image,sales_price')->where('agent_id', $agent)->where('status', 1)->get()->pluck('fruit', 'stock_pack')->sortBy('name')->values()->all();
+        $fruits = AgentStock::with('fruit:id,name,image,sales_price')->where('agent_id', $agent)->where('status', 1)->get()->sortBy('name')->values()->all();
         // $fruits = $fruits->orderBy('name','asc');
         // $fruits = Fruit::select('id','name','image','sales_price')->where('status', 1)->orderBy('name','asc')->get();
 
