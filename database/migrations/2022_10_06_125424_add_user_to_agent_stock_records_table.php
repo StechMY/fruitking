@@ -15,7 +15,7 @@ class AddUserToAgentStockRecordsTable extends Migration
     {
         Schema::table('agent_stock_records', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            // $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -27,7 +27,7 @@ class AddUserToAgentStockRecordsTable extends Migration
     public function down()
     {
         Schema::table('agent_stock_records', function (Blueprint $table) {
-            $table->dropForeign('user_id');
+            // $table->dropForeign('user_id');
             $table->dropColumn('user_id');
         });
     }
