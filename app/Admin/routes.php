@@ -22,5 +22,6 @@ Route::group([
     $router->resource('employee-records', EmployeeBuyController::class);
     $router->resource('agent-employee-records', AgentEmployeeBuyController::class);
     $router->resource('agent-self-records', AgentSelfBuyController::class);
+    $router->resource('expenses', ExpenseController::class);
     // $router->resource('agent-profiles', AgentController::class);
 });
