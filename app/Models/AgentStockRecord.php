@@ -15,11 +15,16 @@ class AgentStockRecord extends Model
         'stock_before',
         'quantity',
         'stock_after',
-        'remarks', 'type'
+        'remarks', 'type', 'user_id'
     ];
 
     public function agentstock()
     {
         return $this->belongsTo(AgentStock::class, 'agentstock_id');
+    }
+
+    public function from()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

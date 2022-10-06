@@ -79,6 +79,7 @@ class AgentStockRecordController extends AdminController
                 return $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
             });
         }
+        $grid->column('from.username', __('From'));
         $grid->column('stock_before', __('Stock before'));
         $grid->column('quantity', __('Quantity'));
         $grid->column('stock_after', __('Stock after'));
