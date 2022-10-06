@@ -114,7 +114,7 @@ class AgentStockRecordController extends AdminController
                     ->when(request('agentstock') != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) {
                         return $q->when(request('agentstock')['agent_id'] != null, function ($q) {
                             // dd('lol');
-                            return $q->with(["agentstock" => function ($q) {
+                            return $q->whereHas(["agentstock" => function ($q) {
                                 $q->where('agentstock.agent_id', '=', request('agentstock')['agent_id']);
                             }]);
                         });
