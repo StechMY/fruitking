@@ -29,6 +29,11 @@ class ExpenseController extends AdminController
             $create->text('name', '名称')->rules('required');
             $create->text('fee', '費用')->rules('required|numeric');
         });
+        $grid->filter(function ($filter) {
+            $filter->disableIdFilter();
+            $filter->between('created_at', 'Time')->datetime();
+            $filter->like('name', '名称');
+        });
         $grid->actions(function ($actions) {
 
             $actions->disableEdit();
@@ -41,7 +46,29 @@ class ExpenseController extends AdminController
         $grid->column('fee', __('Fee'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->header(function ($query) {
+            // dd(request()->all());
+            $fee = Expense::when(request('created_at') != null, function ($q) {
+                return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                    return $q->where('created_at', '>', request('created_at')['start']);
+                })
+                    ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                        return $q->where('created_at', '<', request('created_at')['end']);
+                    })
+                    ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                        return $q->whereBetween('created_at', request('created_at'));
+                    });
+            })
+                // ->when(request('fruit_id') != null, function ($q) {
+                //     return $q->where('fruit_id', request('fruit_id'));
+                // })
+                ->when(request('name') != null, function ($q) {
+                    return $q->where('name', 'like', '%' . request('name') . '%');
+                })->sum('fee');
+            $htmltext = "<div class='badge bg-green' style='padding: 10px;margin-right:10px;'> 總費用: " . $fee . "</div>";
 
+            return $htmltext;
+        });
         return $grid;
     }
 
