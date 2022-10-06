@@ -20,5 +20,8 @@
     "Stock after": "更動后庫存數量",
     "Quantity": "數量",
     "Remarks": "備注",
-    "Phone": "電話"
+    "Phone": "電話",
+    "Ori Price": "員工價",
+    "Stock pack": "庫存",
+    "Fee": "費用"
 }
