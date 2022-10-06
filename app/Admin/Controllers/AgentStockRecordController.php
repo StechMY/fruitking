@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\AgentStock;
 use App\Models\AgentStockRecord;
 use App\Models\Fruit;
+use App\Models\User;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
@@ -55,6 +56,7 @@ class AgentStockRecordController extends AdminController
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
+            $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
         });
         $grid->column('id', __('Id'));
         $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
