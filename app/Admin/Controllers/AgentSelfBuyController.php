@@ -85,7 +85,48 @@ class AgentSelfBuyController extends AdminController
         $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->header(function ($query) {
+            // dd(request()->all());
+            $fruits = Fruit::when(request('fruit_id') != null, function ($q) {
+                return $q->where('id', request('fruit_id'));
+            })->get();
+            $htmltext = '';
+            foreach ($fruits as $data) {
+                $quantity = AgentStockRecord::where('type', 2)->with(["agentstock" => function ($q) use ($data) {
+                    $q->with(["fruit" => function ($q) use ($data) {
+                        $q->where('fruit.id', '=', $data->id);
+                    }]);
+                }])
+                    ->when(request('created_at') != null, function ($q) {
+                        return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                            return $q->where('created_at', '>', request('created_at')['start']);
+                        })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                                return $q->where('created_at', '<', request('created_at')['end']);
+                            })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                                return $q->whereBetween('created_at', request('created_at'));
+                            });
+                    })
+                    // ->when(request('fruit_id') != null, function ($q) {
+                    //     return $q->where('fruit_id', request('fruit_id'));
+                    // })
+                    ->when(request('agentstock') != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) {
+                        return $q->when(request('agentstock')['agent_id'] != null, function ($q) {
+                            // dd('lol');
+                            return $q->whereHas("agentstock", function ($q) {
+                                $q->where('agent_id', '=', request('agentstock')['agent_id']);
+                            });
+                        });
+                    })->when(request('user_id') != null, function ($q) {
+                        return $q->where('user_id', request('user_id'));
+                    })->sum('quantity');
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
+            }
 
+
+            return $htmltext;
+        });
         return $grid;
     }
 

@@ -67,7 +67,9 @@ class StockController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
-            $fruits = Fruit::all();
+            $fruits = Fruit::when(request('fruit_id') != null, function ($q) {
+                return $q->where('id', request('fruit_id'));
+            })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
                 $quantity = StockRecord::whereIn('type', [0, 1])->where('fruit_id', $data->id)

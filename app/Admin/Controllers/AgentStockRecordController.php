@@ -89,7 +89,9 @@ class AgentStockRecordController extends AdminController
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
             // dd(request()->all());
-            $fruits = Fruit::all();
+            $fruits = Fruit::when(request('fruit_id') != null, function ($q) {
+                return $q->where('id', request('fruit_id'));
+            })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
                 $quantity = AgentStockRecord::whereIn('type', [1, 3])->with(["agentstock" => function ($q) use ($data) {
