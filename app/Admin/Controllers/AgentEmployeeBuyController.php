@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\AgentStock;
 use App\Models\AgentStockRecord;
 use App\Models\Fruit;
+use App\Models\User;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
@@ -43,7 +44,7 @@ class AgentEmployeeBuyController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [3, 4]);
+        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [4, 5]);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -56,6 +57,7 @@ class AgentEmployeeBuyController extends AdminController
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
+            $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
         });
         $grid->column('id', __('Id'));
         $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
@@ -78,6 +80,7 @@ class AgentEmployeeBuyController extends AdminController
                 return $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
             });
         }
+        $grid->column('from.username', __('From'));
         $grid->column('stock_before', __('Stock before'));
         $grid->column('quantity', __('Quantity'));
         $grid->column('stock_after', __('Stock after'));
@@ -85,8 +88,46 @@ class AgentEmployeeBuyController extends AdminController
         $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->header(function ($query) {
+            // dd(request()->all());
+            $fruits = Fruit::all();
+            $htmltext = '';
+            foreach ($fruits as $data) {
+                $quantity = AgentStockRecord::whereIn('type', [4, 5])->with(["agentstock" => function ($q) use ($data) {
+                    $q->with(["fruit" => function ($q) use ($data) {
+                        $q->where('fruit.id', '=', $data->id);
+                    }]);
+                }])
+                    ->when(request('created_at') != null, function ($q) {
+                        return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                            return $q->where('created_at', '>', request('created_at')['start']);
+                        })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                                return $q->where('created_at', '<', request('created_at')['end']);
+                            })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                                return $q->whereBetween('created_at', request('created_at'));
+                            });
+                    })
+                    // ->when(request('fruit_id') != null, function ($q) {
+                    //     return $q->where('fruit_id', request('fruit_id'));
+                    // })
+                    ->when(request('agentstock') != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) {
+                        return $q->when(request('agentstock')['agent_id'] != null, function ($q) {
+                            // dd('lol');
+                            return $q->whereHas("agentstock", function ($q) {
+                                $q->where('agent_id', '=', request('agentstock')['agent_id']);
+                            });
+                        });
+                    })->when(request('user_id') != null, function ($q) {
+                        return $q->where('user_id', request('user_id'));
+                    })->sum('quantity');
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
+            }
 
-        return $grid;
+
+            return $htmltext;
+        });
 
         return $grid;
     }
