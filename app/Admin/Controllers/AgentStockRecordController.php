@@ -96,7 +96,7 @@ class AgentStockRecordController extends AdminController
             })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
-                $quantity = AgentStockRecord::whereIn('type', [1, 3])->with(["agentstock" => function ($q) use ($data) {
+                $quantity = AgentStockRecord::whereIn('type', [1, 3])->whereHas(["agentstock" => function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
                         $q->where('fruit.id', '=', $data->id);
                     });
