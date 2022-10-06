@@ -152,9 +152,10 @@ class SalesRecordController extends Controller
             ], 200);
         }
         //Validate data
-        $data = $request->only('products');
+        $data = $request->only('products', 'type');
         $validator = Validator::make($data, [
             'products' => 'required',
+            'type' => 'required'
         ]);
 
         //Send failed response if request is not valid
@@ -165,14 +166,14 @@ class SalesRecordController extends Controller
         foreach ($request->products as $data) {
             $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $fruit = Fruit::find($data['id']);
-            if ($agentstock->status != 1) {
+            if ($agentstock->stock_pack < $data['qty']) {
                 $error .= '[' . $fruit->name . ']';
             }
         }
         if ($error != '') {
             return response()->json([
                 'success' => false,
-                'message' => $error . ' is not available',
+                'message' => $error . ' is not available/quantity not enough',
                 'data' => $agentstock
             ], 200);
         }
@@ -206,13 +207,16 @@ class SalesRecordController extends Controller
             //     $agentstock->status = 0;
             //     $agentstock->save();
             // }
-            if ($request->type == 1) {
+            if ($request->type == 3) {
                 $remark = $this->user->username . '賣出';
-            } else {
+            } else if ($request->type == 4) {
+                $remark = $this->user->username . '自購';
+            } else if ($request->type == 5) {
                 $remark = $this->user->username . ' ' . $request->remarks;
             }
             $agentstockafter = $agentstock->stock_pack;
             $agentstock->record()->create([
+                'user_id' => $this->user->id,
                 'stock_before' => $agentstockbefore,
                 'quantity' => - ($data['qty']),
                 'stock_after' => $agentstockafter,
@@ -222,14 +226,15 @@ class SalesRecordController extends Controller
         }
 
         //Request is valid, create new product
-        $product = $this->user->sales()->create([
-            'user_id' => $this->user->id,
-            'products' => $newdata,
-            'total_sales' => $totalsales,
-            'total_commission' => $totalcommission,
-            'remarks' => $remark
-        ]);
-
+        if ($request->type == 3) {
+            $product = $this->user->sales()->create([
+                'user_id' => $this->user->id,
+                'products' => $newdata,
+                'total_sales' => $totalsales,
+                'total_commission' => $totalcommission,
+                'remarks' => $remark
+            ]);
+        }
         //Product created, return success response
         return response()->json([
             'success' => true,
