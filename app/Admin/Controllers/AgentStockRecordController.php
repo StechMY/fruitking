@@ -87,7 +87,7 @@ class AgentStockRecordController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
-            // dd(request()->all());
+            dd(request()->all());
             $fruits = Fruit::all();
             $htmltext = '';
             foreach ($fruits as $data) {
