@@ -96,7 +96,7 @@ class AgentSelfBuyController extends AdminController
             foreach ($fruits as $data) {
                 $quantity = AgentStockRecord::where('type', 2)->whereHas("agentstock", function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
-                        $q->where('agentstock.fruit.id', '=', $data->id);
+                        $q->where('id', '=', $data->id);
                     });
                 })
                     ->when(request('created_at') != null, function ($q) {

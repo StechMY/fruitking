@@ -99,7 +99,7 @@ class AgentEmployeeBuyController extends AdminController
             foreach ($fruits as $data) {
                 $quantity = AgentStockRecord::whereIn('type', [4, 5])->whereHas("agentstock", function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
-                        $q->where('agentstock.fruit.id', '=', $data->id);
+                        $q->where('id', '=', $data->id);
                     });
                 })
                     ->when(request('created_at') != null, function ($q) {
