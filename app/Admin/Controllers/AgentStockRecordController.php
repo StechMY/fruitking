@@ -118,6 +118,8 @@ class AgentStockRecordController extends AdminController
                                 $q->where('agentstock.agent_id', '=', request('agentstock')['agent_id']);
                             }]);
                         });
+                    })->when(request('user_id') != null, function ($q) {
+                        return $q->where('user_id', request('user_id'));
                     })->sum('quantity');
                 $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
             }
