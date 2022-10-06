@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Admin\Actions\AgentStock\AgentStockUpdate;
 use App\Models\AgentStock;
 use App\Models\Fruit;
+use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
@@ -34,6 +35,9 @@ class AgentStockController extends AdminController
         }
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
+            if (Admin::user()->inRoles(['administrator', 'company'])) {
+                $filter->equal('agent_id', __('Agent'))->select(Administrator::pluck('username', 'id'));
+            }
             $filter->equal('fruit_id', __('Fruit'))->select(Fruit::where('status', 1)->pluck('name', 'id'));
             // $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });

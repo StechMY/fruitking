@@ -42,7 +42,7 @@ class AgentStockRecordController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->where('type', 1);
+        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [1, 3]);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -84,7 +84,38 @@ class AgentStockRecordController extends AdminController
         $grid->column('type', __('Type'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->header(function ($query) {
+            $fruits = Fruit::all();
+            $htmltext = '';
+            foreach ($fruits as $data) {
+                $quantity = AgentStockRecord::whereIn('type', [1, 3])->with(["agentstock" => function ($q) use ($data) {
+                    $q->with(["fruit" => function ($q) use ($data) {
+                        $q->where('fruit.id', '=', $data->id);
+                    }]);
+                }])
+                    ->when(request('created_at') != null, function ($q) {
+                        return $q->when(request('created_at')['start'] != null && request('created_at')['end'] == null, function ($q) {
+                            return $q->where('created_at', '>', request('created_at')['start']);
+                        })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] == null, function ($q) {
+                                return $q->where('created_at', '<', request('created_at')['end']);
+                            })
+                            ->when(request('created_at')['end'] != null && request('created_at')['start'] != null, function ($q) {
+                                return $q->whereBetween('created_at', request('created_at'));
+                            });
+                    })
+                    // ->when(request('fruit_id') != null, function ($q) {
+                    //     return $q->where('fruit_id', request('fruit_id'));
+                    // })
+                    ->when(request('from_id') != null, function ($q) {
+                        return $q->where('from_id', request('from_id'));
+                    })->sum('quantity');
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
+            }
 
+
+            return $htmltext;
+        });
         return $grid;
     }
 
