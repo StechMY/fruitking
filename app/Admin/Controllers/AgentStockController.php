@@ -69,8 +69,8 @@ class AgentStockController extends AdminController
         //     'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],
         // ];
         // $grid->column('status', __('Status'))->switch($states);
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        // $grid->column('created_at', __('Created at'));
+        // $grid->column('updated_at', __('Updated at'));
 
         return $grid;
     }
