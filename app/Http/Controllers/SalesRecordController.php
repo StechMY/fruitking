@@ -210,7 +210,7 @@ class SalesRecordController extends Controller
             if ($request->type == 3) {
                 $remark = $this->user->username . '賣出';
             } else if ($request->type == 4) {
-                $remark = $this->user->username . ' 其他原因 ' . $request->remarks;
+                $remark = $this->user->username . ' ' . $request->remarks;
             } else if ($request->type == 5) {
                 $remark = $this->user->username . '警察送出';
             }
