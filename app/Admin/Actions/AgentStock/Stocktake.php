@@ -15,6 +15,9 @@ class Stocktake extends RowAction
     {
         $quantity = $request->get('quantity');
         $stockbefore = $model->stock_pack;
+        if ($quantity > $stockbefore) {
+            return $this->response()->error('庫存不足')->refresh();
+        }
         $model->stock_pack -= $quantity;
         $model->save();
         $stockafter = $model->stock_pack;
