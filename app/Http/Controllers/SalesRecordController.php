@@ -234,7 +234,7 @@ class SalesRecordController extends Controller
         //Product created, return success response
         return response()->json([
             'success' => true,
-            'message' => 'Sales record created successfully',
+            'message' => 'Record created successfully',
             'data' => $data
         ], Response::HTTP_CREATED);
     }
