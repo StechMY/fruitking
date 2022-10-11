@@ -101,7 +101,7 @@ class SalesController extends AdminController
         ], 'warning');
         $grid->column('cancel_action', __('Status'))->action(Cancel::class);
         $grid->header(function ($query) {
-            // dd(request('sales_records'));
+            dd(request()->all());
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
             $totalsales = SalesRecord::when(request('is_cancel') != null, function ($q) {
                 return $q->where('is_cancel', request('is_cancel'));
