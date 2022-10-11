@@ -91,7 +91,13 @@ class SalesController extends AdminController
         $grid->column('total_commission', __('Total commission'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
-        $grid->column('is_cancel', __('Cancel'))->action(Cancel::class);
+        $grid->column('is_cancel', __('Cancel'))->using([
+            0 => '無',
+            1 => '已取消',
+        ], '未知')->dot([
+            0 => 'success',
+            1 => 'danger',
+        ], 'warning')->action(Cancel::class);
         $grid->header(function ($query) {
             // dd(request('sales_records'));
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
