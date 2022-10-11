@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Actions\AgentStock\AgentStockUpdate;
+use App\Admin\Actions\AgentStock\Stocktake;
 use App\Models\AgentStock;
 use App\Models\Fruit;
 use Encore\Admin\Auth\Database\Administrator;
@@ -60,6 +61,7 @@ class AgentStockController extends AdminController
         }
         $grid->column('fruit.name', __('Fruit'));
         $grid->column('stock_pack', __('Stock pack'));
+        $grid->column('action', __('操作'))->action(Stocktake::class);
 
         // $grid->column('stock_pack', __('Stock pack'))->action(AgentStockUpdate::class);
         // $states = [
