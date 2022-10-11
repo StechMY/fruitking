@@ -183,21 +183,17 @@ class SalesRecordController extends Controller
         foreach ($request->products as $data) {
             $fruit = Fruit::find($data['id']);
             $sales_price = $fruit->sales_price;
-            $ori_price = $fruit->ori_price;
+            // $ori_price = $fruit->ori_price;
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
             $fruitdata = [
                 'fruitname' => $fruitname,
-                'sales_price' => $request->type == 1 ? $sales_price : $ori_price,
-                'commission_price' => $request->type == 1 ? $commission_price : 0,
+                'sales_price' => $sales_price,
+                'commission_price' => $commission_price,
                 'quantity' => $data['qty']
             ];
-            $totalcommission += $request->type == 1 ? $commission_price * $data['qty'] : 0;
-            if ($request->type == 1) {
-                $totalsales += $sales_price * $data['qty'];
-            } else {
-                $totalsales += $ori_price * $data['qty'];
-            }
+            $totalcommission += $commission_price * $data['qty'];
+            $totalsales += $sales_price * $data['qty'];
             $newdata->push($fruitdata);
             $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $agentstockbefore = $agentstock->stock_pack;
