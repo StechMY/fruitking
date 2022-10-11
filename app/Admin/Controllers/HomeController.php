@@ -181,7 +181,7 @@ class HomeController extends Controller
             $column->append('<div style="margin-top:20px;" class="text-center"><button class="btn btn-success" onclick="submitStock()">提交</button></div>');
           });
           Admin::html('
-                <script>async function submitStock(){
+                <script>function submitStock(){
                     const numbers = document.querySelectorAll(".number");
                     var fruitarray = [];
                     numbers.forEach((div) => {
@@ -190,82 +190,82 @@ class HomeController extends Controller
                             number: div.value
                         });
                     });
-
-                    const inputOptions = new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve({
-                          "1": "售價",
-                          "2": "員工價",
-                        })
-                      }, 1000)
-                    })
-                    
-                    const { value: selectoption } = await swal.fire({
-                      type: "question",
-                      title: "請選擇此操作類型",
-                      input: "radio",
-                      inputOptions: inputOptions,
-                      inputValidator: (value) => {
-                        if (!value) {
-                          return "請選擇其中一個!"
-                        }
-                      }
-                    })
-                    
-                    if (selectoption) {
-                      swal.fire({
-                        title: "確定執行？",
-                        text: "請確認資料無誤",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "確定",
-                        cancelButtonText: "取消"
-                      }).then((result) => {
-                        if (result.value) {
-                          $.ajaxSetup({
-                            headers: {
-                                "X-CSRF-TOKEN": $("meta[name=' . "csrf-token" . ']").attr("content")
-                            }
-                        });
-                        $.ajax({
-                            type: "POST",
-                            url: "/admin/takefruit",
-                            data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . ',type:selectoption},
-                            dataType: "json",
-                            success: function (data) {
-                              if (data.success == false){
-                                Swal.fire(
-                                  "失敗!",
-                                  data.error,
-                                  "error"
-                                );
-                              }else {
-                                Swal.fire(
-                                  "成功!",
-                                  "此動作已被記錄.",
-                                  "success"
-                                );
-                                numbers.forEach((div) => {
-                                  div.value = 0;
-                                });
-                              }
-                            },
-                            error: function (data) {
+                    swal.fire({
+                      title: "確定執行？",
+                      text: "請確認資料無誤",
+                      type: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "確定",
+                      cancelButtonText: "取消"
+                    }).then((result) => {
+                      if (result.value) {
+                        $.ajaxSetup({
+                          headers: {
+                              "X-CSRF-TOKEN": $("meta[name=' . "csrf-token" . ']").attr("content")
+                          }
+                      });
+                      $.ajax({
+                          type: "POST",
+                          url: "/admin/takefruit",
+                          data: {data: fruitarray,agent:' . FacadesAdmin::user()->id . '},
+                          dataType: "json",
+                          success: function (data) {
+                            if (data.success == false){
                               Swal.fire(
-                                "出錯!",
-                                "請嘗試刷新頁面.",
+                                "失敗!",
+                                data.error,
                                 "error"
                               );
-                                console.log(data);
+                            }else {
+                              Swal.fire(
+                                "成功!",
+                                "此動作已被記錄.",
+                                "success"
+                              );
+                              numbers.forEach((div) => {
+                                div.value = 0;
+                              });
                             }
-                        });
-                        }
-                      })
-                    }
+                          },
+                          error: function (data) {
+                            Swal.fire(
+                              "出錯!",
+                              "請嘗試刷新頁面.",
+                              "error"
+                            );
+                              console.log(data);
+                          }
+                      });
+                      }
+                    })
                 }</script>');
         });
     }
   }
 }
+// const inputOptions = new Promise((resolve) => {
+//   setTimeout(() => {
+//     resolve({
+//       "1": "售價",
+//       "2": "員工價",
+//     })
+//   }, 1000)
+// })
+
+// const { value: selectoption } = await swal.fire({
+//   type: "question",
+//   title: "請選擇此操作類型",
+//   input: "radio",
+//   inputOptions: inputOptions,
+//   inputValidator: (value) => {
+//     if (!value) {
+//       return "請選擇其中一個!"
+//     }
+//   }
+// })
+
+// if (selectoption) {
+  
+// }
