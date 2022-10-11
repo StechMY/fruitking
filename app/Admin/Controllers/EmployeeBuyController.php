@@ -62,7 +62,7 @@ class EmployeeBuyController extends AdminController
         if (Admin::user()->inRoles(['administrator', 'company'])) {
             $grid->column('stock_after', __('Stock after'));
         }
-        $grid->column('type', __('Type'));
+        // $grid->column('type', __('Type'));
         $grid->column('remarks', __('Remarks'))->filter('like');
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
