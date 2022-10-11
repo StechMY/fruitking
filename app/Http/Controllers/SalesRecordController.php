@@ -45,7 +45,7 @@ class SalesRecordController extends Controller
             ], 200);
         }
         $allsales = collect();
-        $salesrecord = $this->user->sales()->get(array(
+        $salesrecord = $this->user->sales()->where('is_cancel', 0)->get(array(
             DB::raw('products'),
             DB::raw('total_sales'),
             DB::raw('total_commission'),
