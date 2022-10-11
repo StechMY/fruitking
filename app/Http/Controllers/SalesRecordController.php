@@ -172,7 +172,7 @@ class SalesRecordController extends Controller
         }
         if ($error != '') {
             return response()->json([
-                'success' => false,
+                'success' => true,
                 'message' => $error . ' is not available/quantity not enough',
                 'data' => $agentstock
             ], 200);
