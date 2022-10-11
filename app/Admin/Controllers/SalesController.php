@@ -101,10 +101,10 @@ class SalesController extends AdminController
         ], 'warning');
         $grid->column('cancel_action', __('Status'))->action(Cancel::class);
         $grid->header(function ($query) {
-            dd(request()->all());
+            // dd(request()->all());
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
             $totalsales = SalesRecord::when(request('is_cancel') != null, function ($q) {
-                return $q->where('is_cancel', request('is_cancel'));
+                return $q->whereIn('is_cancel', request('is_cancel'));
             })->when(request('sales_records') != null, function ($q) {
                 return $q->when(request('sales_records')['created_at']['start'] != null && request('sales_records')['created_at']['end'] == null, function ($q) {
                     return $q->where('created_at', '>', request('sales_records')['created_at']['start']);
@@ -131,7 +131,7 @@ class SalesController extends AdminController
                 })
                 ->sum('total_sales');
             $totalcommission = SalesRecord::when(request('is_cancel') != null, function ($q) {
-                return $q->where('is_cancel', request('is_cancel'));
+                return $q->whereIn('is_cancel', request('is_cancel'));
             })->when(request('sales_records') != null, function ($q) {
                 return $q->when(request('sales_records')['created_at']['start'] != null && request('sales_records')['created_at']['end'] == null, function ($q) {
                     return $q->where('created_at', '>', request('sales_records')['created_at']['start']);
