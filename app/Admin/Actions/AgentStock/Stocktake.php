@@ -17,22 +17,23 @@ class Stocktake extends RowAction
         $stockbefore = $model->stock_pack;
         if ($quantity > $stockbefore) {
             return $this->response()->error('庫存不足')->refresh();
-        }
-        $model->stock_pack -= $quantity;
-        $model->save();
-        $stockafter = $model->stock_pack;
-        if ($quantity != 0) {
-            $model->record()->create([
-                'stock_before' => $stockbefore,
-                'quantity' => $quantity,
-                'stock_after' => $stockafter,
-                'type' => 2,
-                'user_id' => 0,
-                'remarks' => Admin::user()->username . '自購'
-            ]);
-        }
+        } else {
+            $model->stock_pack -= $quantity;
+            $model->save();
+            $stockafter = $model->stock_pack;
+            if ($quantity != 0) {
+                $model->record()->create([
+                    'stock_before' => $stockbefore,
+                    'quantity' => $quantity,
+                    'stock_after' => $stockafter,
+                    'type' => 2,
+                    'user_id' => 0,
+                    'remarks' => Admin::user()->username . '自購'
+                ]);
+            }
 
-        return $this->response()->success('更新成功')->refresh();
+            return $this->response()->success('更新成功')->refresh();
+        }
     }
 
     public function form()
