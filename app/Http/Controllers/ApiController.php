@@ -133,7 +133,7 @@ class ApiController extends Controller
         }
         $user = auth()->user();
         $agent = $user->agent->id;
-        $fruits = AgentStock::with('fruit:id,name,image,sales_price')->where('agent_id', $agent)->where('status', 1)->get();
+        $fruits = AgentStock::with('fruit:id,name,image,sales_price,ori_price')->where('agent_id', $agent)->where('status', 1)->get();
         foreach ($fruits as $data) {
             $data->fruit->stock = $data->stock_pack;
         }
