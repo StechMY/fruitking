@@ -91,7 +91,7 @@ class SalesController extends AdminController
         $grid->column('total_commission', __('Total commission'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
-        $grid->column('is_cancel', __('Status'))->using([
+        $grid->column('is_cancel', __('Cancel'))->using([
             0 => '無',
             1 => '已取消',
         ], '未知')->dot([
