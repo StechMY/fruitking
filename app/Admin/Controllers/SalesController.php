@@ -54,6 +54,7 @@ class SalesController extends AdminController
             } else {
                 $filter->equal('user_id', __('User'))->select(User::where('agent_id', Admin::user()->id)->pluck('username', 'id'));
             }
+            $filter->in('is_cancel', '被取消')->multipleSelect([0 => '無', 1 => '已取消']);
         });
         $grid->disableActions();
         $grid->batchActions(function ($batch) {
