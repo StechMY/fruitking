@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Actions\SalesRecord\Cancel;
 use App\Models\SalesRecord;
 use App\Models\User;
 use Encore\Admin\Auth\Database\Administrator;
@@ -90,6 +91,7 @@ class SalesController extends AdminController
         $grid->column('total_commission', __('Total commission'));
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
+        $grid->column('is_cancel', __('Cancel'))->action(Cancel::class);
         $grid->header(function ($query) {
             // dd(request('sales_records'));
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
