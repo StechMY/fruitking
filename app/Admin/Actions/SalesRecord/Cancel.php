@@ -12,7 +12,7 @@ class Cancel extends RowAction
 
     public function handle(Model $model, Request $request)
     {
-        $model->is_cancel = 0;
+        $model->is_cancel = 1;
         $model->save();
         return $this->response()->success('更新成功')->refresh();
     }
