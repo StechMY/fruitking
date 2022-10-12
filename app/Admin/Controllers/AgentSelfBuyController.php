@@ -127,7 +127,7 @@ class AgentSelfBuyController extends AdminController
                             $query->where('agent_stocks.agent_id', Admin::user()->id);
                         });
                     })->sum('quantity');
-                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . "</div>";
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . '*' . $data->ori_price . "(員工價) = " . $quantity * $data->ori_price . "</div>";
             }
 
 
