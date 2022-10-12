@@ -53,7 +53,6 @@ class SalesRecordController extends Controller
             DB::raw("DATE_FORMAT(created_at, '%Y-%m') new_date")
 
         ));
-        $a = '';
         $salesdaily = $salesrecord->groupBy('date');
         $salesmonthly = $salesrecord->groupBy('new_date');
         foreach ($salesdaily as $datekey => $date) {
@@ -114,7 +113,131 @@ class SalesRecordController extends Controller
         $alltotalsales = $salesrecord->sum('total_sales');
         $allsales->put('all_total_sales', $alltotalsales);
 
-        return response()->json(['success' => true, 'record' => $allsales]);
+        $allself = collect();
+        $selfrecord = $this->user->stockrecord()->where('user_id', $this->user->id)->where('type', 4)->get(array(
+            DB::raw('agentstock_id'),
+            DB::raw('quantity'),
+            DB::raw('Date(created_at) as date'),
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') new_date")
+
+        ));
+        $selfdaily = $selfrecord->groupBy('date');
+        $selfmonthly = $selfrecord->groupBy('new_date');
+        // return ($selfdaily);
+        foreach ($selfdaily as $datekey => $date) {
+            $tempfruits = array();
+            foreach ($date as $detailkey => $detail) {
+                $agentstock = AgentStock::find($detail->agentstock_id);
+                $fruit = Fruit::find($agentstock->fruit_id);
+                if (is_int($matchkey = array_search($fruit->name, array_column($tempfruits, 'fruitname')))) {
+                    $tempfruits[$matchkey]['qty'] += $detail->quantity;
+                    // $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
+                } else {
+                    $newfruit = [
+                        'fruitname' => $fruit->name,
+                        'qty' => $detail->quantity,
+                        // 'total_sales' => $value['sales_price'] * $value['quantity'],
+                    ];
+                    array_push($tempfruits, $newfruit);
+                }
+                unset($selfdaily[$datekey][$detailkey]);
+            }
+            $date['fruits'] = array_values($tempfruits);
+        }
+        // return $salesmonthly;
+        foreach ($selfmonthly as $monthkey => $month) {
+            $tempfruits = array();
+            foreach ($month as $detailkey => $detail) {
+                $agentstock = AgentStock::find($detail->agentstock_id);
+                $fruit = Fruit::find($agentstock->fruit_id);
+                if (is_int($matchkey = array_search($fruit->name, array_column($tempfruits, 'fruitname')))) {
+                    $tempfruits[$matchkey]['qty'] += $detail->quantity;
+                    // $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
+                } else {
+                    $newfruit = [
+                        'fruitname' => $fruit->name,
+                        'qty' => $detail->quantity,
+                        // 'total_sales' => $value['sales_price'] * $value['quantity'],
+                    ];
+                    array_push($tempfruits, $newfruit);
+                }
+
+                unset($selfmonthly[$monthkey][$detailkey]);
+            }
+            $month['fruits'] = array_values($tempfruits);
+        }
+        $allself->put('daily', $selfdaily);
+        $newformatmonth = collect();
+        foreach ($selfmonthly as $monthkey => $data) {
+            $newformatmonth->put($monthkey . '-01', $data);
+        }
+        $allself->put('monthly', $newformatmonth);
+        // $alltotalsales = $salesrecord->sum('total_sales');
+        // $allsales->put('all_total_sales', $alltotalsales);
+
+        $allgive = collect();
+        $givereocrd = $this->user->stockrecord()->where('user_id', $this->user->id)->where('type', 5)->get(array(
+            DB::raw('agentstock_id'),
+            DB::raw('quantity'),
+            DB::raw('Date(created_at) as date'),
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') new_date")
+
+        ));
+        $givedaily = $givereocrd->groupBy('date');
+        $givemonthly = $givereocrd->groupBy('new_date');
+        // return ($givedaily);
+        foreach ($givedaily as $datekey => $date) {
+            $tempfruits = array();
+            foreach ($date as $detailkey => $detail) {
+                $agentstock = AgentStock::find($detail->agentstock_id);
+                $fruit = Fruit::find($agentstock->fruit_id);
+                if (is_int($matchkey = array_search($fruit->name, array_column($tempfruits, 'fruitname')))) {
+                    $tempfruits[$matchkey]['qty'] += $detail->quantity;
+                    // $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
+                } else {
+                    $newfruit = [
+                        'fruitname' => $fruit->name,
+                        'qty' => $detail->quantity,
+                        // 'total_sales' => $value['sales_price'] * $value['quantity'],
+                    ];
+                    array_push($tempfruits, $newfruit);
+                }
+                unset($givedaily[$datekey][$detailkey]);
+            }
+            $date['fruits'] = array_values($tempfruits);
+        }
+        // return $salesmonthly;
+        foreach ($givemonthly as $monthkey => $month) {
+            $tempfruits = array();
+            foreach ($month as $detailkey => $detail) {
+                $agentstock = AgentStock::find($detail->agentstock_id);
+                $fruit = Fruit::find($agentstock->fruit_id);
+                if (is_int($matchkey = array_search($fruit->name, array_column($tempfruits, 'fruitname')))) {
+                    $tempfruits[$matchkey]['qty'] += $detail->quantity;
+                    // $tempfruits[$matchkey]['total_sales'] += $value['sales_price'] * $value['quantity'];
+                } else {
+                    $newfruit = [
+                        'fruitname' => $fruit->name,
+                        'qty' => $detail->quantity,
+                        // 'total_sales' => $value['sales_price'] * $value['quantity'],
+                    ];
+                    array_push($tempfruits, $newfruit);
+                }
+
+                unset($givemonthly[$monthkey][$detailkey]);
+            }
+            $month['fruits'] = array_values($tempfruits);
+        }
+        $allgive->put('daily', $givedaily);
+        $newformatmonth = collect();
+        foreach ($givemonthly as $monthkey => $data) {
+            $newformatmonth->put($monthkey . '-01', $data);
+        }
+        $allgive->put('monthly', $newformatmonth);
+        // $alltotalsales = $salesrecord->sum('total_sales');
+        // $allsales->put('all_total_sales', $alltotalsales);
+
+        return response()->json(['success' => true, 'record' => $allsales, 'self' => $allself]);
     }
 
     /**

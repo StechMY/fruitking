@@ -56,4 +56,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Administrator::class, 'agent_id');
     }
+
+    public function stockrecord()
+    {
+        return $this->hasMany(AgentStockRecord::class, 'user_id');
+    }
 }
