@@ -237,7 +237,7 @@ class SalesRecordController extends Controller
         // $alltotalsales = $salesrecord->sum('total_sales');
         // $allsales->put('all_total_sales', $alltotalsales);
 
-        return response()->json(['success' => true, 'record' => $allsales, 'self' => $allself]);
+        return response()->json(['success' => true, 'record' => $allsales, 'self' => $allself, 'give' => $allgive]);
     }
 
     /**
