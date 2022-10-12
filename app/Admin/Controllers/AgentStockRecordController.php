@@ -90,8 +90,8 @@ class AgentStockRecordController extends AdminController
         $grid->header(function ($query) {
             // dd(request()->all());
             $fruits = Fruit::when(request('agentstock') != null, function ($q) {
-                return $q->when(request('agentstock')['fruit_id'] != null, function ($q) {
-                    return $q->where('id', request('agentstock')['fruit_id']);
+                return $q->when(!empty(request('agentstock')['fruit_id']), function ($q) {
+                    return $q->whereIn('id', request('agentstock')['fruit_id']);
                 });
             })->get();
             $htmltext = '';
@@ -116,14 +116,14 @@ class AgentStockRecordController extends AdminController
                     //     return $q->where('fruit_id', request('fruit_id'));
                     // })
                     ->when(request('agentstock') != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) {
-                        return $q->when(request('agentstock')['agent_id'] != null, function ($q) {
+                        return $q->when(!empty(request('agentstock')['agent_id']), function ($q) {
                             // dd('lol');
                             return $q->whereHas("agentstock", function ($q) {
-                                $q->where('agent_id', '=', request('agentstock')['agent_id']);
+                                $q->whereIn('agent_id', request('agentstock')['agent_id']);
                             });
                         });
-                    })->when(request('user_id') != null, function ($q) {
-                        return $q->where('user_id', request('user_id'));
+                    })->when(!empty(request('user_id')), function ($q) {
+                        return $q->whereIn('user_id', request('user_id'));
                     })->when(!Admin::user()->inRoles(['administrator', 'company']), function ($q) {
                         return $q->whereHas('agentstock', function ($query) {
                             $query->where('agent_stocks.agent_id', Admin::user()->id);

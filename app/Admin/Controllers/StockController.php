@@ -67,8 +67,8 @@ class StockController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
-            $fruits = Fruit::when(request('fruit_id') != null, function ($q) {
-                return $q->where('id', request('fruit_id'));
+            $fruits = Fruit::when(!empty(request('fruit_id')), function ($q) {
+                return $q->whereIn('id', request('fruit_id'));
             })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
@@ -87,8 +87,8 @@ class StockController extends AdminController
                     // ->when(request('fruit_id') != null, function ($q) {
                     //     return $q->where('fruit_id', request('fruit_id'));
                     // })
-                    ->when(request('from_id') != null, function ($q) {
-                        return $q->where('from_id', request('from_id'));
+                    ->when(!empty(request('from_id')), function ($q) {
+                        return $q->whereIn('from_id', request('from_id'));
                     })->sum('quantity');
                 $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>"
                     . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></div>";
