@@ -145,8 +145,8 @@ class SalesController extends AdminController
                         return $q->whereBetween('created_at', request('sales_records')['created_at']);
                     });
             })
-                ->when(request('user_id') != null, function ($q) {
-                    return $q->where('user_id', request('user_id'));
+                ->when(!empty(request('user_id')), function ($q) {
+                    return $q->whereIn('user_id', request('user_id'));
                 })
                 ->when($lastkey != '_pjax' && request($lastkey) != null && Admin::user()->inRoles(['administrator', 'company']), function ($q) use ($lastkey) {
                     return $q->whereHas('user', function ($query) use ($lastkey) {
