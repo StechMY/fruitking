@@ -89,7 +89,7 @@ class AgentEmployeeBuyController extends AdminController
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
         $grid->header(function ($query) {
-            // dd(request()->all());
+            dd(request()->all());
             $fruits = Fruit::when(request('agentstock') != null, function ($q) {
                 return $q->when(request('agentstock')['fruit_id'] != null, function ($q) {
                     return $q->where('id', request('agentstock')['fruit_id']);
