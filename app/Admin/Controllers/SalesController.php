@@ -46,14 +46,14 @@ class SalesController extends AdminController
             $filter->between('sales_records.created_at', 'Time')->datetime();
             $filter->in('is_cancel', '被取消')->multipleSelect([0 => '無', 1 => '已取消']);
             if (Admin::user()->inRoles(['administrator', 'company'])) {
-                $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
-                $filter->where(function ($query) {
+                $filter->in('user_id', __('User'))->multipleSelect(User::pluck('username', 'id'));
+                $filter->in(function ($query) {
                     $query->whereHas('user', function ($query) {
                         $query->where('agent_id', $this->input);
                     });
-                }, __('Agent'))->select(Administrator::pluck('username', 'id'));
+                }, __('Agent'))->multipleSelect(Administrator::pluck('username', 'id'));
             } else {
-                $filter->equal('user_id', __('User'))->select(User::where('agent_id', Admin::user()->id)->pluck('username', 'id'));
+                $filter->in('user_id', __('User'))->multipleSelect(User::where('agent_id', Admin::user()->id)->pluck('username', 'id'));
             }
         });
         $grid->disableActions();

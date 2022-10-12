@@ -34,9 +34,9 @@ class StockController extends AdminController
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
-            $filter->equal('fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
+            $filter->in('fruit_id', __('Fruit'))->multipleSelect(Fruit::pluck('name', 'id'));
             if (Admin::user()->inRoles(['administrator', 'company'])) {
-                $filter->equal('from_id', ' From')->select(Administrator::whereExists(function ($query) {
+                $filter->in('from_id', ' From')->multipleSelect(Administrator::whereExists(function ($query) {
                     $query->select(DB::raw('role_id', 'user_id'))
                         ->from('admin_role_users')
                         ->where('admin_role_users.role_id', 2)

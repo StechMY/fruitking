@@ -43,20 +43,20 @@ class AgentStockRecordController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [1, 3]);
+        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [0, 1, 3]);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
-            $filter->equal('agentstock.fruit_id', __('Fruit'))->select(Fruit::pluck('name', 'id'));
+            $filter->in('agentstock.fruit_id', __('Fruit'))->multipleSelect(Fruit::pluck('name', 'id'));
             if (Admin::user()->inRoles(['administrator', 'company'])) {
-                $filter->equal('agentstock.agent_id', ' Agent')->select(Administrator::whereExists(function ($query) {
+                $filter->in('agentstock.agent_id', ' Agent')->multipleSelect(Administrator::whereExists(function ($query) {
                     $query->select(DB::raw('role_id', 'user_id'))
                         ->from('admin_role_users')
                         ->where('admin_role_users.role_id', 2)
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
-            $filter->equal('user_id', __('User'))->select(User::pluck('username', 'id'));
+            $filter->in('user_id', __('User'))->multipleSelect(User::pluck('username', 'id'));
         });
         $grid->column('id', __('Id'));
         $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
@@ -96,7 +96,7 @@ class AgentStockRecordController extends AdminController
             })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
-                $quantity = AgentStockRecord::whereIn('type', [1, 3])->whereHas("agentstock", function ($q) use ($data) {
+                $quantity = AgentStockRecord::whereIn('type', [0, 1, 3])->whereHas("agentstock", function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
                         $q->where('id', '=', $data->id);
                     });

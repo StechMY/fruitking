@@ -37,9 +37,9 @@ class AgentStockController extends AdminController
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             if (Admin::user()->inRoles(['administrator', 'company'])) {
-                $filter->equal('agent_id', __('Agent'))->select(Administrator::pluck('username', 'id'));
+                $filter->in('agent_id', __('Agent'))->multipleSelect(Administrator::pluck('username', 'id'));
             }
-            $filter->equal('fruit_id', __('Fruit'))->select(Fruit::where('status', 1)->pluck('name', 'id'));
+            $filter->in('fruit_id', __('Fruit'))->multipleSelect(Fruit::where('status', 1)->pluck('name', 'id'));
             // $filter->equal('status', __('Status'))->select([0 => 'Suspend', 1 => 'Active']);
         });
         $grid->batchActions(function ($batch) {
