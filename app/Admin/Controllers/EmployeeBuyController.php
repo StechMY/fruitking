@@ -90,7 +90,7 @@ class EmployeeBuyController extends AdminController
                     ->when(request('from_id') != null, function ($q) {
                         return $q->where('from_id', request('from_id'));
                     })->sum('quantity');
-                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity . ' * RM' . $data->ori_price . " (員工價) = RM " . $quantity * $data->ori_price .  "</div>";
+                $htmltext .= "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></div>";
             }
             return $htmltext;
         });
