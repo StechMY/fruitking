@@ -309,7 +309,9 @@ class SalesRecordController extends Controller
             // $ori_price = $fruit->ori_price;
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
+            $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $fruitdata = [
+                'agent_stock_id' => $agentstock->id,
                 'fruitname' => $fruitname,
                 'sales_price' => $sales_price,
                 'commission_price' => $commission_price,
