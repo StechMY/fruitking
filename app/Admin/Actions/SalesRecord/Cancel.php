@@ -17,8 +17,18 @@ class Cancel extends RowAction
         $model->save();
         foreach ($model->products as $data) {
             $agentstock = AgentStock::find($data['agent_stock_id']);
+            $stockbefore = $agentstock->stock_pack;
             $agentstock->stock_pack += $data['quantity'];
             $agentstock->save();
+            $stockafter = $agentstock->stock_pack;
+            $agentstock->record()->create([
+                'stock_before' => $stockbefore,
+                'quantity' => $data['quantity'],
+                'stock_after' => $stockafter,
+                'remarks' => 'Sales被Company取消 返回庫存',
+                'type' => 0,
+                'user_id' => 0,
+            ]);
         }
         return $this->response()->success('更新成功')->refresh();
     }
