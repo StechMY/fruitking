@@ -310,17 +310,8 @@ class SalesRecordController extends Controller
             $commission_price = $fruit->commission_price;
             $fruitname = $fruit->name;
             $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
-            $fruitdata = [
-                'agent_stock_id' => $agentstock->id,
-                'fruitname' => $fruitname,
-                'sales_price' => $sales_price,
-                'commission_price' => $commission_price,
-                'quantity' => $data['qty']
-            ];
             $totalcommission += $commission_price * $data['qty'];
             $totalsales += $sales_price * $data['qty'];
-            $newdata->push($fruitdata);
-            $agentstock = AgentStock::where('agent_id', $this->user->agent_id)->where('fruit_id', $data['id'])->first();
             $agentstockbefore = $agentstock->stock_pack;
             $agentstock->stock_pack -= $data['qty'];
             $agentstock->save();
@@ -336,7 +327,7 @@ class SalesRecordController extends Controller
                 $remark = $this->user->username . '警察送出';
             }
             $agentstockafter = $agentstock->stock_pack;
-            $agentstock->record()->create([
+            $agentstockrecord = $agentstock->record()->create([
                 'user_id' => $this->user->id,
                 'stock_before' => $agentstockbefore,
                 'quantity' => - ($data['qty']),
@@ -345,6 +336,15 @@ class SalesRecordController extends Controller
                 'total_price' => $fruit->ori_price * $data['qty'],
                 'remarks' => $remark
             ]);
+            $fruitdata = [
+                'agent_stock_id' => $agentstock->id,
+                'agent_stock_record_id' => $agentstockrecord->id,
+                'fruitname' => $fruitname,
+                'sales_price' => $sales_price,
+                'commission_price' => $commission_price,
+                'quantity' => $data['qty']
+            ];
+            $newdata->push($fruitdata);
         }
 
         //Request is valid, create new product
