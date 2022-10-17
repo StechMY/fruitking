@@ -19,7 +19,7 @@ Route::group([
     $router->resource('area-codes', AreaController::class);
     $router->resource('agent-stocks', AgentStockController::class);
     $router->resource('agent-stock-records', AgentStockRecordController::class);
-    $router->resource('employee-records', EmployeeBuyController::class);
+    // $router->resource('employee-records', EmployeeBuyController::class);
     $router->resource('agent-employee-records', AgentEmployeeBuyController::class);
     // $router->resource('agent-self-records', AgentSelfBuyController::class); //Agent自购记录
     $router->resource('expenses', ExpenseController::class);
