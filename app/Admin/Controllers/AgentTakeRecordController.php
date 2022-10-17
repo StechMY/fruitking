@@ -56,7 +56,7 @@ class AgentTakeRecordController extends AdminController
                         ->whereColumn('admin_role_users.user_id', 'admin_users.id');
                 })->pluck('username', 'id'));
             }
-            $filter->in('user_id', __('User'))->multipleSelect(User::pluck('username', 'id'));
+            // $filter->in('user_id', __('User'))->multipleSelect(User::pluck('username', 'id'));
         });
         $grid->column('id', __('Id'));
         $grid->column('agentstock_id', __('Agent stock'))->display(function ($data) {
@@ -79,7 +79,7 @@ class AgentTakeRecordController extends AdminController
                 return $q->where('agent_stocks.agent_id', '=', Admin::user()->id);
             });
         }
-        $grid->column('from.username', __('From'));
+        // $grid->column('from.username', __('From'));
         $grid->column('stock_before', __('Stock before'));
         $grid->column('quantity', __('Quantity'));
         $grid->column('stock_after', __('Stock after'));
@@ -123,9 +123,11 @@ class AgentTakeRecordController extends AdminController
                                 $q->whereIn('agent_id', request('agentstock')['agent_id']);
                             });
                         });
-                    })->when(!empty(request('user_id')), function ($q) {
-                        return $q->whereIn('user_id', request('user_id'));
-                    })->when(!Admin::user()->inRoles(['administrator', 'company']), function ($q) {
+                    })
+                    // ->when(!empty(request('user_id')), function ($q) {
+                    //     return $q->whereIn('user_id', request('user_id'));
+                    // })
+                    ->when(!Admin::user()->inRoles(['administrator', 'company']), function ($q) {
                         return $q->whereHas('agentstock', function ($query) {
                             $query->where('agent_stocks.agent_id', Admin::user()->id);
                         });
