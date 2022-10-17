@@ -69,7 +69,7 @@ class HomeController extends Controller
                 box-shadow: var(--shadow);
               }
               .input-row {
-                // display: flex;
+                display: flex;
                 padding: var(--space-8) 0;
                 border-bottom: var(--border);
                 margin-bottom:20px;
@@ -154,7 +154,6 @@ class HomeController extends Controller
               $column->append('<div class="container">
                         <div class="input-row">
                           <div class="title">
-                            <img src="' . $data->image . '" height="150">
                             <h4>' . $data->name . '</h4>
                             
                           </div>
