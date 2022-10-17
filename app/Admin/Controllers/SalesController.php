@@ -161,7 +161,7 @@ class SalesController extends AdminController
                     });
                 })
                 ->sum('total_commission');
-            return "<div class='badge bg-yellow' style='padding: 10px;margin-right:10px;'>" . __('Total Sales') . ": " . $totalsales . "</div>" .
+            return "<div class='badge bg-yellow' style='padding: 5px;margin-right:5px;'>" . __('Total Sales') . ": " . $totalsales . "</div>" .
                 "<div class='badge bg-blue' style='padding: 10px;margin-right:10px;'>" . __('Total Commission') . ": " . $totalcommission . "</div>";
         });
         return $grid;
