@@ -162,7 +162,7 @@ class SalesController extends AdminController
                 })
                 ->sum('total_commission');
             return "<button type='button' class='btn btn-error btn-custom'>" . __('Total Sales') . ": " . $totalsales . "</button>" .
-                "<button type='button' class='btn btn-error bg-success'>" . __('Total Commission') . ": " . $totalcommission . "</button>";
+                "<button type='button' class='btn btn-error bg-success btn-custom'>" . __('Total Commission') . ": " . $totalcommission . "</button>";
         });
         return $grid;
     }
