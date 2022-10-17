@@ -1,0 +1,6 @@
+@media all and (max-width:767px) {
+    .btn-custom {
+        width: 100%;
+        display: block;
+    }
+}

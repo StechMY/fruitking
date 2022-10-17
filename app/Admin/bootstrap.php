@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
 
 Encore\Admin\Form::forget(['map', 'editor']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
+Admin::css('/css/custom.css');
 // $stockless = Fruit::where('status', 1)->where('stock', '<', 10)->get();
 // $message = '';
 // foreach ($stockless as $data) {

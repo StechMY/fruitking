@@ -90,7 +90,7 @@ class EmployeeBuyController extends AdminController
                     ->when(!empty(request('from_id')), function ($q) {
                         return $q->whereIn('from_id', request('from_id'));
                     })->sum('quantity');
-                $htmltext .= "<button type='button' class='btn btn-error'>" . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></button>";
+                $htmltext .= "<button type='button' class='btn btn-error btn-custom'>" . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></button>";
             }
             return $htmltext;
         });

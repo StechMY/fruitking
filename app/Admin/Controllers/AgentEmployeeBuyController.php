@@ -132,7 +132,7 @@ class AgentEmployeeBuyController extends AdminController
                             $query->where('agent_stocks.agent_id', Admin::user()->id);
                         });
                     })->sum('quantity');
-                $htmltext .= "<button type='button' class='btn btn-error'>" . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></buttons>";
+                $htmltext .= "<button type='button' class='btn btn-error btn-custom'>" . $data->name . ": " . $quantity .  '<br> * RM' . $data->ori_price . " (員工價) = <span style='color:red;'>RM " . $quantity * $data->ori_price .   "</span></buttons>";
             }
 
 
