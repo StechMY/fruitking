@@ -55,14 +55,15 @@ class StockController extends AdminController
         $grid->column('id', __('Id'));
         $grid->column('from.username', __('From'));
         $grid->column('fruit.name', __('Fruit'));
-        if (Admin::user()->inRoles(['administrator', 'company'])) {
-            $grid->column('stock_before', __('Stock before'));
-        }
+        // if (Admin::user()->inRoles(['administrator', 'company'])) {
+        //     $grid->column('stock_before', __('Stock before'));
+        // }
         $grid->column('quantity', __('Quantity'));
-        if (Admin::user()->inRoles(['administrator', 'company'])) {
-            $grid->column('stock_after', __('Stock after'));
-        }
+        // if (Admin::user()->inRoles(['administrator', 'company'])) {
+        //     $grid->column('stock_after', __('Stock after'));
+        // }
         // $grid->column('type', __('Type'));
+        $grid->column('total_price', __('Total Price'));
         $grid->column('remarks', __('Remarks'))->filter('like');
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));

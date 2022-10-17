@@ -38,7 +38,7 @@ class FruitController extends AdminController
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->like('name', __('Name'));
-            $filter->equal('status', __('Status'))->select([0 => 'Off', 1 => 'On']);
+            // $filter->equal('status', __('Status'))->select([0 => 'Off', 1 => 'On']);
         });
         $grid->column('id', __('Id'));
         $grid->column('name', __('Name'));
@@ -57,13 +57,13 @@ class FruitController extends AdminController
         $grid->column('ori_price', __('Ori price'));
         $grid->column('sales_price', __('Sales price'));
         $grid->column('commission_price', __('Commission price'));
-        $grid->column('image', __('Image'))->image();
-        $grid->column('stock', __('Stock'))->action(StockUpdate::class);
-        $states = [
-            'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
-            'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],
-        ];
-        $grid->column('status', __('Status'))->switch($states);
+        // $grid->column('image', __('Image'))->image();
+        // $grid->column('stock', __('Stock'))->action(StockUpdate::class);
+        // $states = [
+        //     'on'  => ['value' => 1, 'text' => 'On', 'color' => 'primary'],
+        //     'off' => ['value' => 0, 'text' => 'Off', 'color' => 'default'],
+        // ];
+        // $grid->column('status', __('Status'))->switch($states);
         $grid->column('created_at', __('Created at'));
         $grid->column('updated_at', __('Updated at'));
 
@@ -118,13 +118,15 @@ class FruitController extends AdminController
         $form->decimal('ori_price', __('Ori price'))->required();
         $form->decimal('sales_price', __('Sales price'))->required();
         $form->decimal('commission_price', __('Commission price'))->required();
-        $form->image('image', __('Image'))->removable();
-        $form->number('stock', __('Stock'))->default('0')->required()->rules('gt:-1|numeric');
+        // $form->image('image', __('Image'))->removable();
+        $form->hidden('stock', __('Stock'))->value('0');
+
+        // $form->number('stock', __('Stock'))->default('0')->required()->rules('gt:-1|numeric');
         $states = [
             'on'  => ['value' => 1, 'text' => 'On', 'color' => 'success'],
             'off' => ['value' => 0, 'text' => 'Off', 'color' => 'danger'],
         ];
-        $form->switch('status', __('Status'))->default('1')->states($states)->required();
+        // $form->switch('status', __('Status'))->default('1')->states($states)->required();
         global $stockbefore;
         $form->saving(function (Form $form) {
             if ($form->isEditing()) {
@@ -159,20 +161,20 @@ class FruitController extends AdminController
     public function takefruit(Request $request)
     {
         $agent = Administrator::find($request->agent);
-        foreach ($request->data as $data) {
-            if ($data['number'] > 0) {
-                $fruit = Fruit::find($data['id']);
-                if ($fruit->stock < $data['number']) {
-                    return response()->json(['success' => false, 'error' => $fruit->name . '公司庫存不足'], 200);
-                }
-            }
-        }
+        // foreach ($request->data as $data) {
+        //     if ($data['number'] > 0) {
+        //         $fruit = Fruit::find($data['id']);
+        //         if ($fruit->stock < $data['number']) {
+        //             return response()->json(['success' => false, 'error' => $fruit->name . '公司庫存不足'], 200);
+        //         }
+        //     }
+        // }
         foreach ($request->data as $data) {
             if ($data['number'] > 0) {
                 $fruit = Fruit::find($data['id']);
                 $stok_before = $fruit->stock;
-                $fruit->stock -= $data['number'];
-                $fruit->save();
+                // $fruit->stock -= $data['number'];
+                // $fruit->save();
                 $stok_after = $fruit->stock;
                 $quantitytake = $data['number'];
                 $message = ' 取货';
@@ -189,6 +191,7 @@ class FruitController extends AdminController
                     'quantity' =>  -$data['number'],
                     'stock_after' =>  $stok_after,
                     'type' => 1,
+                    'total_price' => $fruit->ori_price * $data['number'],
                     'remarks' => $agent->username . $message,
                 ]);
                 $agentstock = AgentStock::where('agent_id', Admin::user()->id)->where('fruit_id', $data['id'])->first();
@@ -216,6 +219,7 @@ class FruitController extends AdminController
                     'stock_after' => $stockafter,
                     'remarks' => '從公司拿貨' . $message,
                     'user_id' => 0,
+                    'total_price' => $fruit->ori_price * $data['number'],
                     'type' => 1,
                 ]);
             }

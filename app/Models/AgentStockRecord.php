@@ -15,7 +15,8 @@ class AgentStockRecord extends Model
         'stock_before',
         'quantity',
         'stock_after',
-        'remarks', 'type', 'user_id'
+        'remarks', 'type', 'user_id',
+        'total_price'
     ];
 
     public function agentstock()

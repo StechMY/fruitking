@@ -342,6 +342,7 @@ class SalesRecordController extends Controller
                 'quantity' => - ($data['qty']),
                 'stock_after' => $agentstockafter,
                 'type' => $request->type,
+                'total_price' => $fruit->ori_price * $data['qty'],
                 'remarks' => $remark
             ]);
         }

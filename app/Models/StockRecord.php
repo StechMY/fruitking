@@ -19,6 +19,7 @@ class StockRecord extends Model
         'type',
         'stock_after',
         'remarks',
+        'total_price'
     ];
 
     public function fruit()
