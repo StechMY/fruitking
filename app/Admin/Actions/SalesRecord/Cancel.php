@@ -25,7 +25,7 @@ class Cancel extends RowAction
                 'stock_before' => $stockbefore,
                 'quantity' => $data['quantity'],
                 'stock_after' => $stockafter,
-                'remarks' => 'Sales被Company取消 返回庫存',
+                'remarks' => 'Sales被取消 返回庫存',
                 'type' => 0,
                 'user_id' => 0,
             ]);

@@ -5,7 +5,6 @@ namespace App\Admin\Controllers;
 use App\Models\AgentStock;
 use App\Models\AgentStockRecord;
 use App\Models\Fruit;
-use App\Models\User;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
@@ -14,7 +13,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Illuminate\Support\Facades\DB;
 
-class AgentStockRecordController extends AdminController
+class AgentTakeRecordController extends AdminController
 {
     /**
      * Title for current resource.
@@ -43,7 +42,7 @@ class AgentStockRecordController extends AdminController
                 return $agentname . ':' . $fruitname;
             });
         });
-        $grid->model()->orderBy('id', 'DESC')->where('type', 3);
+        $grid->model()->orderBy('id', 'DESC')->whereIn('type', [0, 1]);
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Time')->datetime();
@@ -97,7 +96,7 @@ class AgentStockRecordController extends AdminController
             })->get();
             $htmltext = '';
             foreach ($fruits as $data) {
-                $quantity = AgentStockRecord::where('type', 3)->whereHas("agentstock", function ($q) use ($data) {
+                $quantity = AgentStockRecord::whereIn('type', [0, 1])->whereHas("agentstock", function ($q) use ($data) {
                     $q->whereHas("fruit", function ($q) use ($data) {
                         $q->where('id', '=', $data->id);
                     });
@@ -145,37 +144,41 @@ class AgentStockRecordController extends AdminController
      * @param mixed $id
      * @return Show
      */
-    // protected function detail($id)
-    // {
-    //     $show = new Show(AgentStockRecord::findOrFail($id));
+    protected function detail($id)
+    {
+        $show = new Show(AgentStockRecord::findOrFail($id));
 
-    //     $show->field('id', __('Id'));
-    //     $show->field('agentstock_id', __('Agentstock id'));
-    //     $show->field('stock_before', __('Stock before'));
-    //     $show->field('quantity', __('Quantity'));
-    //     $show->field('stock_after', __('Stock after'));
-    //     $show->field('remarks', __('Remarks'));
-    //     $show->field('created_at', __('Created at'));
-    //     $show->field('updated_at', __('Updated at'));
+        $show->field('id', __('Id'));
+        $show->field('agentstock_id', __('Agentstock id'));
+        $show->field('stock_before', __('Stock before'));
+        $show->field('quantity', __('Quantity'));
+        $show->field('stock_after', __('Stock after'));
+        $show->field('remarks', __('Remarks'));
+        $show->field('created_at', __('Created at'));
+        $show->field('updated_at', __('Updated at'));
+        $show->field('type', __('Type'));
+        $show->field('user_id', __('User id'));
 
-    //     return $show;
-    // }
+        return $show;
+    }
 
-    // /**
-    //  * Make a form builder.
-    //  *
-    //  * @return Form
-    //  */
-    // protected function form()
-    // {
-    //     $form = new Form(new AgentStockRecord());
+    /**
+     * Make a form builder.
+     *
+     * @return Form
+     */
+    protected function form()
+    {
+        $form = new Form(new AgentStockRecord());
 
-    //     $form->number('agentstock_id', __('Agentstock id'));
-    //     $form->number('stock_before', __('Stock before'));
-    //     $form->number('quantity', __('Quantity'));
-    //     $form->number('stock_after', __('Stock after'));
-    //     $form->text('remarks', __('Remarks'));
+        $form->number('agentstock_id', __('Agentstock id'));
+        $form->number('stock_before', __('Stock before'));
+        $form->number('quantity', __('Quantity'));
+        $form->number('stock_after', __('Stock after'));
+        $form->text('remarks', __('Remarks'));
+        $form->text('type', __('Type'));
+        $form->number('user_id', __('User id'));
 
-    //     return $form;
-    // }
+        return $form;
+    }
 }
