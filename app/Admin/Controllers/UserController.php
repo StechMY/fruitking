@@ -139,7 +139,7 @@ class UserController extends AdminController
             $model->username = $area->code . sprintf('%03d', $form->model()->id);
             $model->save();
         });
-        $form->switch('status', __('Status'))->states($states);
+        $form->switch('status', __('Status'))->states($states)->default(1);
 
         return $form;
     }
