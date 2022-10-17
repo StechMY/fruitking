@@ -3,6 +3,7 @@
 namespace App\Admin\Actions\SalesRecord;
 
 use App\Models\AgentStock;
+use App\Models\AgentStockRecord;
 use Encore\Admin\Actions\RowAction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class Cancel extends RowAction
         $model->save();
         foreach ($model->products as $data) {
             $agentstock = AgentStock::find($data['agent_stock_id']);
-            $agentstockrecord = AgentStock::find($data['agent_stock_record_id']);
+            $agentstockrecord = AgentStockRecord::find($data['agent_stock_record_id']);
             $agentstockrecord->delete();
             $stockbefore = $agentstock->stock_pack;
             $agentstock->stock_pack += $data['quantity'];
