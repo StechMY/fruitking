@@ -15,7 +15,7 @@ class Cancel extends RowAction
     public function handle(Model $model, Request $request)
     {
         if ($model->is_cancel == 1) {
-            return $this->response()->success('已被操作')->refresh();
+            return $this->response()->error('已被操作')->refresh();
         }
         $model->is_cancel = 1;
         $model->save();
