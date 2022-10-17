@@ -122,39 +122,39 @@ class FruitController extends AdminController
         $form->hidden('stock', __('Stock'))->value('0');
 
         // $form->number('stock', __('Stock'))->default('0')->required()->rules('gt:-1|numeric');
-        $states = [
-            'on'  => ['value' => 1, 'text' => 'On', 'color' => 'success'],
-            'off' => ['value' => 0, 'text' => 'Off', 'color' => 'danger'],
-        ];
+        // $states = [
+        //     'on'  => ['value' => 1, 'text' => 'On', 'color' => 'success'],
+        //     'off' => ['value' => 0, 'text' => 'Off', 'color' => 'danger'],
+        // ];
         // $form->switch('status', __('Status'))->default('1')->states($states)->required();
-        global $stockbefore;
-        $form->saving(function (Form $form) {
-            if ($form->isEditing()) {
-                $before = Fruit::find($form->model()->id);
-                global $stockbefore;
-                $stockbefore = $before->stock;
-            } else {
-                global $stockbefore;
-                $stockbefore = 0;
-            }
-        });
-        $form->saved(function (Form $form) {
-            global $stockbefore;
-            $fruit = Fruit::find($form->model()->id);
-            if ($fruit) {
-                if ($form->model()->stock != $stockbefore) {
-                    $fruit->record()->create([
-                        'from_id' => Admin::user()->id,
-                        'stock_before' => $stockbefore,
-                        'quantity' => $form->model()->stock - $stockbefore,
-                        'stock_after' => $form->model()->stock,
-                        'type' => 0,
-                        'remarks' => 'Admin 更新库存'
-                    ]);
-                }
-            } else {
-            }
-        });
+        // global $stockbefore;
+        // $form->saving(function (Form $form) {
+        //     if ($form->isEditing()) {
+        //         $before = Fruit::find($form->model()->id);
+        //         global $stockbefore;
+        //         $stockbefore = $before->stock;
+        //     } else {
+        //         global $stockbefore;
+        //         $stockbefore = 0;
+        //     }
+        // });
+        // $form->saved(function (Form $form) {
+        //     global $stockbefore;
+        //     $fruit = Fruit::find($form->model()->id);
+        //     if ($fruit) {
+        //         if ($form->model()->stock != $stockbefore) {
+        //             $fruit->record()->create([
+        //                 'from_id' => Admin::user()->id,
+        //                 'stock_before' => $stockbefore,
+        //                 'quantity' => $form->model()->stock - $stockbefore,
+        //                 'stock_after' => $form->model()->stock,
+        //                 'type' => 0,
+        //                 'remarks' => 'Admin 更新库存'
+        //             ]);
+        //         }
+        //     } else {
+        //     }
+        // });
         return $form;
     }
 
