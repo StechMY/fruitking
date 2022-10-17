@@ -150,7 +150,7 @@ class HomeController extends Controller
         ->row(function (Row $row) {
           $fruits = Fruit::where('status', 1)->get();
           foreach ($fruits as $data) {
-            $row->column(6, function (Column $column) use ($data) {
+            $row->column(12, function (Column $column) use ($data) {
               $column->append('<div class="container">
                         <div class="input-row">
                           <div class="title">
