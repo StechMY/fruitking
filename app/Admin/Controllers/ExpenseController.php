@@ -65,7 +65,7 @@ class ExpenseController extends AdminController
                 ->when(request('name') != null, function ($q) {
                     return $q->where('name', 'like', '%' . request('name') . '%');
                 })->sum('fee');
-            $htmltext = "<div class='badge bg-green' style='padding: 10px;margin-right:10px;'> 總費用: " . $fee . "</div>";
+            $htmltext = "<button type='button' class='btn btn-error bg-info btn-custom'> 總費用: " . $fee . "</div>";
 
             return $htmltext;
         });
