@@ -99,9 +99,9 @@ class SalesController extends AdminController
             0 => 'success',
             1 => 'danger',
         ], 'warning');
-        if (Admin::user()->inRoles(['administrator', 'company'])) {
-            $grid->column('cancel_action', __('Status'))->action(Cancel::class);
-        }
+        // if (Admin::user()->inRoles(['administrator', 'company'])) {
+        $grid->column('cancel_action', __('Status'))->action(Cancel::class);
+        // }
         $grid->header(function ($query) {
             // dd(request()->all());
             $lastkey = array_key_last(request()->query()) ?? '_pjax';
