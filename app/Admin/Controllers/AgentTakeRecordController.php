@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Models\AgentStock;
 use App\Models\AgentStockRecord;
 use App\Models\Fruit;
+use App\Models\User;
 use Encore\Admin\Auth\Database\Administrator;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
