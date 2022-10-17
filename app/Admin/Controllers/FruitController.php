@@ -46,7 +46,7 @@ class FruitController extends AdminController
             $batch->disableDelete();
         });
         $grid->actions(function ($actions) {
-            $actions->add(new StockUpdate);
+            // $actions->add(new StockUpdate);
 
             // 去掉删除
             $actions->disableDelete();
