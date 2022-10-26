@@ -40,8 +40,8 @@ class AgentStockUpdate extends RowAction
     public function form()
     {
 
-        $this->text('quantity', '數量')->rules('required|numeric');
-        $this->radio('type', '操作')->options([1 => '增加', 2 => '减少'])->rules('required|gt:0');
+        $this->text('quantity', '數量')->rules('required|numeric|gt:0');
+        $this->radio('type', '操作')->options([1 => '增加', 2 => '减少'])->rules('required');
     }
 
     public function display($value)
