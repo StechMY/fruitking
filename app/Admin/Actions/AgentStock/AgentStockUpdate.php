@@ -12,9 +12,14 @@ class AgentStockUpdate extends RowAction
 
     public function handle(Model $model, Request $request)
     {
+        $type = $request->get('type');
         $quantity = $request->get('quantity');
         $stockbefore = $model->stock_pack;
-        $model->stock_pack += $quantity;
+        if ($type == 1) {
+            $model->stock_pack += $quantity;
+        } else {
+            $model->stock_pack -= $quantity;
+        }
         $model->save();
         $stockafter = $model->stock_pack;
         if ($quantity != 0) {
@@ -22,7 +27,9 @@ class AgentStockUpdate extends RowAction
                 'stock_before' => $stockbefore,
                 'quantity' => $quantity,
                 'stock_after' => $stockafter,
-                'remarks' => 'Agent 更新库存'
+                'remarks' => 'Admin 更改库存',
+                'user_id' => 0,
+                'type' => 0,
             ]);
         }
         return $this->response()->success('更新成功')->refresh();
@@ -32,11 +39,11 @@ class AgentStockUpdate extends RowAction
     {
 
         $this->text('quantity', '數量')->rules('required|numeric');
+        $this->radio('type', '操作')->options([1 => '增加', 2 => '减少'])->rules('required');
     }
 
     public function display($value)
     {
         return $value;
     }
-
 }
