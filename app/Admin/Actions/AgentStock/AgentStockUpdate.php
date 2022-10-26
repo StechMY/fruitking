@@ -19,6 +19,7 @@ class AgentStockUpdate extends RowAction
             $model->stock_pack += $quantity;
         } else {
             $model->stock_pack -= $quantity;
+            $quantity = -$quantity;
         }
         $model->save();
         $stockafter = $model->stock_pack;
