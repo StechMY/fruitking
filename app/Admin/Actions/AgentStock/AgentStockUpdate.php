@@ -30,6 +30,7 @@ class AgentStockUpdate extends RowAction
                 'remarks' => 'Admin 更改库存',
                 'user_id' => 0,
                 'type' => 0,
+                'total_price' => 0,
             ]);
         }
         return $this->response()->success('更新成功')->refresh();
