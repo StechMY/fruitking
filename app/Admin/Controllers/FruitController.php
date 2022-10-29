@@ -129,32 +129,43 @@ class FruitController extends AdminController
         // $form->switch('status', __('Status'))->default('1')->states($states)->required();
         // global $stockbefore;
         // $form->saving(function (Form $form) {
-        //     if ($form->isEditing()) {
-        //         $before = Fruit::find($form->model()->id);
-        //         global $stockbefore;
-        //         $stockbefore = $before->stock;
-        //     } else {
-        //         global $stockbefore;
-        //         $stockbefore = 0;
-        //     }
-        // });
-        // $form->saved(function (Form $form) {
+
+        // if ($form->isEditing()) {
+        //     $before = Fruit::find($form->model()->id);
         //     global $stockbefore;
-        //     $fruit = Fruit::find($form->model()->id);
-        //     if ($fruit) {
-        //         if ($form->model()->stock != $stockbefore) {
-        //             $fruit->record()->create([
-        //                 'from_id' => Admin::user()->id,
-        //                 'stock_before' => $stockbefore,
-        //                 'quantity' => $form->model()->stock - $stockbefore,
-        //                 'stock_after' => $form->model()->stock,
-        //                 'type' => 0,
-        //                 'remarks' => 'Admin 更新库存'
-        //             ]);
-        //         }
-        //     } else {
-        //     }
+        //     $stockbefore = $before->stock;
+        // } else {
+        //     global $stockbefore;
+        //     $stockbefore = 0;
+        // }
         // });
+        $form->saved(function (Form $form) {
+            // global $stockbefore;
+            // $fruit = Fruit::find($form->model()->id);
+            // if ($fruit) {
+            //     if ($form->model()->stock != $stockbefore) {
+            //         $fruit->record()->create([
+            //             'from_id' => Admin::user()->id,
+            //             'stock_before' => $stockbefore,
+            //             'quantity' => $form->model()->stock - $stockbefore,
+            //             'stock_after' => $form->model()->stock,
+            //             'type' => 0,
+            //             'remarks' => 'Admin 更新库存'
+            //         ]);
+            //     }
+            // } else {
+            // }
+            $agent = Administrator::where('id', '!=', 1)->get();
+            foreach ($agent as $data) {
+                AgentStock::create(
+                    [
+                        'agent_id' => $data->id,
+                        'fruit_id' => $form->model()->id,
+                        'stock_pack' => 0,
+                    ]
+                );
+            }
+        });
         return $form;
     }
 
