@@ -327,15 +327,28 @@ class SalesRecordController extends Controller
                 $remark = $this->user->username . ' 警察送出 ' . $request->remarks;
             }
             $agentstockafter = $agentstock->stock_pack;
-            $agentstockrecord = $agentstock->record()->create([
-                'user_id' => $this->user->id,
-                'stock_before' => $agentstockbefore,
-                'quantity' => - ($data['qty']),
-                'stock_after' => $agentstockafter,
-                'type' => $request->type,
-                'total_price' => $fruit->ori_price * $data['qty'],
-                'remarks' => $remark
-            ]);
+            if ($request->type == 3) {
+                $agentstockrecord = $agentstock->record()->create([
+                    'user_id' => $this->user->id,
+                    'stock_before' => $agentstockbefore,
+                    'quantity' => - ($data['qty']),
+                    'stock_after' => $agentstockafter,
+                    'type' => $request->type,
+                    'total_price' => $fruit->sales_price * $data['qty'],
+                    'remarks' => $remark
+                ]);
+            } else {
+                $agentstockrecord = $agentstock->record()->create([
+                    'user_id' => $this->user->id,
+                    'stock_before' => $agentstockbefore,
+                    'quantity' => - ($data['qty']),
+                    'stock_after' => $agentstockafter,
+                    'type' => $request->type,
+                    'total_price' => $fruit->ori_price * $data['qty'],
+                    'remarks' => $remark
+                ]);
+            }
+
             $fruitdata = [
                 'agent_stock_id' => $agentstock->id,
                 'agent_stock_record_id' => $agentstockrecord->id,
