@@ -15,7 +15,7 @@ Route::group([
     $router->resource('users', UserController::class);
     $router->resource('fruits', FruitController::class);
     $router->resource('sales-records', SalesController::class);
-    $router->resource('stock-records', StockController::class);
+    // $router->resource('stock-records', StockController::class);
     $router->resource('area-codes', AreaController::class);
     $router->resource('agent-stocks', AgentStockController::class);
     $router->resource('agent-stock-records', AgentStockRecordController::class);

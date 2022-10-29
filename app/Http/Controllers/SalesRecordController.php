@@ -324,7 +324,7 @@ class SalesRecordController extends Controller
             } else if ($request->type == 4) {
                 $remark = $this->user->username . ' 員工價 ' . $request->remarks;
             } else if ($request->type == 5) {
-                $remark = $this->user->username . '警察送出';
+                $remark = $this->user->username . ' 警察送出 ' . $request->remarks;
             }
             $agentstockafter = $agentstock->stock_pack;
             $agentstockrecord = $agentstock->record()->create([
