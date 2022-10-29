@@ -29,6 +29,22 @@ class AgentStockController extends AdminController
      */
     protected function grid()
     {
+        $agent = Administrator::where('id', '!=', 1)->get();
+        $fruit = Fruit::all();
+        foreach ($agent as $data) {
+            foreach ($fruit as $fruitdata) {
+                $checkfruit = AgentStock::where('agent_id', $data->id)->where('fruit_id', $fruitdata->id)->first();
+                if ($checkfruit === null) {
+                    AgentStock::create(
+                        [
+                            'agent_id' => $data->id,
+                            'fruit_id' => $fruitdata->id,
+                            'stock_pack' => 0,
+                        ]
+                    );
+                }
+            }
+        }
         $grid = new Grid(new AgentStock());
         $grid->disableExport();
         if (!Admin::user()->inRoles(['administrator', 'company'])) {
