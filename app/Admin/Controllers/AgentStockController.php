@@ -20,7 +20,7 @@ class AgentStockController extends AdminController
      *
      * @var string
      */
-    protected $title = 'AgentStock';
+    protected $title = 'Agent库存';
 
     /**
      * Make a grid builder.

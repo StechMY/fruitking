@@ -21,7 +21,7 @@ class AgentStockRecordController extends AdminController
      *
      * @var string
      */
-    protected $title = 'AgentStockRecord';
+    protected $title = 'Agent员工售卖记录';
 
     /**
      * Make a grid builder.

@@ -15,7 +15,7 @@ class AreaController extends AdminController
      *
      * @var string
      */
-    protected $title = 'AreaCode';
+    protected $title = '地区设置';
 
     /**
      * Make a grid builder.

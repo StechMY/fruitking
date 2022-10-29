@@ -23,7 +23,7 @@ class FruitController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Fruit';
+    protected $title = '水果';
 
     /**
      * Make a grid builder.

@@ -15,7 +15,7 @@ class ExpenseController extends AdminController
      *
      * @var string
      */
-    protected $title = 'Expense';
+    protected $title = '开销';
 
     /**
      * Make a grid builder.

@@ -19,7 +19,7 @@ class SalesController extends AdminController
      *
      * @var string
      */
-    protected $title = 'SalesRecord';
+    protected $title = '销售记录';
 
     /**
      * Make a grid builder.
