@@ -156,14 +156,16 @@ class FruitController extends AdminController
             // } else {
             // }
             $agent = Administrator::where('id', '!=', 1)->get();
-            foreach ($agent as $data) {
-                AgentStock::create(
-                    [
-                        'agent_id' => $data->id,
-                        'fruit_id' => $form->model()->id,
-                        'stock_pack' => 0,
-                    ]
-                );
+            if ($form->isCreating()) {
+                foreach ($agent as $data) {
+                    AgentStock::create(
+                        [
+                            'agent_id' => $data->id,
+                            'fruit_id' => $form->model()->id,
+                            'stock_pack' => 0,
+                        ]
+                    );
+                }
             }
         });
         return $form;
