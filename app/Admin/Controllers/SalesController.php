@@ -42,8 +42,8 @@ class SalesController extends AdminController
         $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
-
-            $filter->between('sales_records.created_at', 'Time')->datetime();
+            $filter->date('sold_at', 'Sold at (date)');
+            $filter->between('sales_records.sold_at', 'Sold at (between)')->datetime();
             $filter->in('is_cancel', '被取消')->multipleSelect([0 => '無', 1 => '已取消']);
             if (Admin::user()->inRoles(['administrator', 'company'])) {
                 $filter->in('user_id', __('User'))->multipleSelect(User::pluck('username', 'id'));
