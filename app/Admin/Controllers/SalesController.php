@@ -110,10 +110,10 @@ class SalesController extends AdminController
             // })
             $totalsales = SalesRecord::where('is_cancel', 0)->when(request('sales_records') != null, function ($q) {
                 return $q->when(request('sales_records')['sold_at']['start'] != null && request('sales_records')['sold_at']['end'] == null, function ($q) {
-                    return $q->where('sold_at', '>', request('sales_records')['sold_at']['start']);
+                    return $q->where('sold_at', '>=', request('sales_records')['sold_at']['start']);
                 })
                     ->when(request('sales_records')['sold_at']['end'] != null && request('sales_records')['sold_at']['start'] == null, function ($q) {
-                        return $q->where('sold_at', '<', request('sales_records')['sold_at']['end']);
+                        return $q->where('sold_at', '<=', request('sales_records')['sold_at']['end']);
                     })
                     ->when(request('sales_records')['sold_at']['end'] != null && request('sales_records')['sold_at']['start'] != null, function ($q) {
                         return $q->whereBetween('sold_at', request('sales_records')['sold_at']);
@@ -138,10 +138,10 @@ class SalesController extends AdminController
             // })
             $totalcommission = SalesRecord::where('is_cancel', 0)->when(request('sales_records') != null, function ($q) {
                 return $q->when(request('sales_records')['sold_at']['start'] != null && request('sales_records')['sold_at']['end'] == null, function ($q) {
-                    return $q->where('sold_at', '>', request('sales_records')['sold_at']['start']);
+                    return $q->where('sold_at', '>=', request('sales_records')['sold_at']['start']);
                 })
                     ->when(request('sales_records')['sold_at']['end'] != null && request('sales_records')['sold_at']['start'] == null, function ($q) {
-                        return $q->where('sold_at', '<', request('sales_records')['sold_at']['end']);
+                        return $q->where('sold_at', '<=', request('sales_records')['sold_at']['end']);
                     })
                     ->when(request('sales_records')['sold_at']['end'] != null && request('sales_records')['sold_at']['start'] != null, function ($q) {
                         return $q->whereBetween('sold_at', request('sales_records')['sold_at']);
