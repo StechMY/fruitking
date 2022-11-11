@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AgentStock;
 use App\Models\Fruit;
 use App\Models\SalesRecord;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -359,7 +360,11 @@ class SalesRecordController extends Controller
             ];
             $newdata->push($fruitdata);
         }
-
+        $timenow = Carbon::now();
+        $sold_at = Carbon::now()->toDateString();
+        if ($timenow->lt($timenow->startOfDay()->addHours(9))) {
+            $sold_at = Carbon::now()->subDay()->toDateString();
+        }
         //Request is valid, create new product
         if ($request->type == 3) {
             $product = $this->user->sales()->create([
@@ -367,7 +372,8 @@ class SalesRecordController extends Controller
                 'products' => $newdata,
                 'total_sales' => $totalsales,
                 'total_commission' => $totalcommission,
-                'remarks' => $remark
+                'remarks' => $remark,
+                'sold_at' => $sold_at
             ]);
         }
         //Product created, return success response

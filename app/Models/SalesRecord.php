@@ -11,7 +11,7 @@ class SalesRecord extends Model
     use HasFactory, DefaultDatetimeFormat;
 
     protected $fillable = [
-        'user_id', 'products', 'total_sales', 'total_commission', 'type', 'remarks', 'is_cancel'
+        'user_id', 'products', 'total_sales', 'total_commission', 'type', 'remarks', 'is_cancel', 'sold_at'
     ];
 
     protected $casts = [

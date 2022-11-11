@@ -20,6 +20,7 @@ class CreateSalesRecordsTable extends Migration
             $table->json('products');
             $table->decimal('total_sales', 10, 2);
             $table->decimal('total_commission', 10, 2);
+            $table->date('sold_at');
             $table->timestamps();
         });
     }
