@@ -50,8 +50,8 @@ class SalesRecordController extends Controller
             DB::raw('products'),
             DB::raw('total_sales'),
             DB::raw('total_commission'),
-            DB::raw('Date(created_at) as date'),
-            DB::raw("DATE_FORMAT(created_at, '%Y-%m') new_date")
+            DB::raw('Date(sold_at) as date'),
+            DB::raw("DATE_FORMAT(sold_at, '%Y-%m') new_date")
 
         ));
         $salesdaily = $salesrecord->groupBy('date');
