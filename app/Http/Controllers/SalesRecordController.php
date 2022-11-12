@@ -360,9 +360,9 @@ class SalesRecordController extends Controller
             ];
             $newdata->push($fruitdata);
         }
-        $timenow = Carbon::now();
+        $timenow = Carbon::now()->toDateTimeString();
         $sold_at = Carbon::now()->toDateString();
-        if ($timenow->lt($timenow->startOfDay()->addHours(11))) {
+        if ($timenow < (Carbon::now()->startOfDay()->addHours(9)->toDateTimeString())) {
             $sold_at = Carbon::now()->subDay()->toDateString();
         }
         //Request is valid, create new product
