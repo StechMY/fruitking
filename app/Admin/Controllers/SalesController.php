@@ -29,16 +29,16 @@ class SalesController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new SalesRecord());
-        $grid->export(function ($export) {
-            $export->column('products', function ($value, $original) {
-                $message = '';
-                foreach ($original as $data) {
-                    $message .= 'name: ' . $data['fruitname'] . ' quantity: ' . $data['quantity']
-                        . ' sales_price: ' . $data['sales_price'] .  ' commission_price: ' . $data['commission_price'] . "\n";
-                }
-                return $message;
-            });
-        });
+        // $grid->export(function ($export) {
+        //     $export->column('products', function ($value, $original) {
+        //         $message = '';
+        //         foreach ($original as $data) {
+        //             $message .= 'name: ' . $data['fruitname'] . ' quantity: ' . $data['quantity']
+        //                 . ' sales_price: ' . $data['sales_price'] .  ' commission_price: ' . $data['commission_price'] . "\n";
+        //         }
+        //         return $message;
+        //     });
+        // });
         $grid->model()->orderBy('id', 'DESC');
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
